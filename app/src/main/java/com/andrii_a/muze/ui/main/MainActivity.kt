@@ -1,4 +1,4 @@
-package com.andrii_a.muze
+package com.andrii_a.muze.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
