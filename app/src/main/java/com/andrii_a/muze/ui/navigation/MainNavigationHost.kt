@@ -10,6 +10,7 @@ import com.andrii_a.muze.ui.artist_detail.artistDetailRoute
 import com.andrii_a.muze.ui.artists.artistsRoute
 import com.andrii_a.muze.ui.artwork_detail.artworkDetailRoute
 import com.andrii_a.muze.ui.artworks.artworksRoute
+import com.andrii_a.muze.ui.search.searchRoute
 import com.google.accompanist.systemuicontroller.SystemUiController
 
 @Composable
@@ -40,6 +41,7 @@ fun NavGraphBuilder.navigationBarGraph(
     ) {
         artistsRoute(navHostController, systemUiController)
         artworksRoute(navHostController, systemUiController)
+        searchRoute(navHostController, systemUiController)
     }
 }
 
