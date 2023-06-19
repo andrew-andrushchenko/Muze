@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.andrii_a.muze.ui.artist_detail.navigateToArtistDetail
 import com.andrii_a.muze.ui.navigation.NavigationScreen
 import com.google.accompanist.systemuicontroller.SystemUiController
 
@@ -35,7 +36,7 @@ fun NavGraphBuilder.artistsRoute(
 
         ArtistsScreen(
             artistsFlow = viewModel.artists,
-            navigateToArtistDetail = {}
+            navigateToArtistDetail = navController::navigateToArtistDetail
         )
     }
 }
