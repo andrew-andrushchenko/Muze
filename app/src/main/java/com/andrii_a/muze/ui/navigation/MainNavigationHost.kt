@@ -6,6 +6,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
+import com.andrii_a.muze.ui.artists.artistsRoute
 import com.google.accompanist.systemuicontroller.SystemUiController
 
 @Composable
@@ -20,8 +21,6 @@ fun MainNavigationHost(
         modifier = modifier
     ) {
         navigationBarGraph(navHostController, systemUiController)
-
-
     }
 }
 
@@ -33,7 +32,7 @@ fun NavGraphBuilder.navigationBarGraph(
         route = NAVIGATION_BAR_GRAPH_ROUTE,
         startDestination = NavigationScreen.Artists.route
     ) {
-
+        artistsRoute(navHostController, systemUiController)
     }
 }
 
