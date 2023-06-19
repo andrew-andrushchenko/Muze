@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.navigation
 import com.andrii_a.muze.ui.artist_detail.artistDetailRoute
 import com.andrii_a.muze.ui.artists.artistsRoute
+import com.andrii_a.muze.ui.artwork_detail.artworkDetailRoute
 import com.andrii_a.muze.ui.artworks.artworksRoute
 import com.google.accompanist.systemuicontroller.SystemUiController
 
@@ -25,6 +26,7 @@ fun MainNavigationHost(
         navigationBarGraph(navHostController, systemUiController)
 
         artistDetailRoute(navHostController, systemUiController)
+        artworkDetailRoute(navHostController, systemUiController)
     }
 }
 

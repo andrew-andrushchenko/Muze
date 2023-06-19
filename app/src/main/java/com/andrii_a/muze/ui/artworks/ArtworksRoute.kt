@@ -7,6 +7,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
 import com.andrii_a.muze.ui.navigation.NavigationScreen
 import com.google.accompanist.systemuicontroller.SystemUiController
 
@@ -35,7 +36,7 @@ fun NavGraphBuilder.artworksRoute(
 
         ArtworksScreen(
             artworksFlow = viewModel.artworks,
-            onArtworkSelected = {}
+            onArtworkSelected = navController::navigateToArtworkDetail
         )
     }
 }

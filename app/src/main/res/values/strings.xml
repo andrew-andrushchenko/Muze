@@ -4,6 +4,9 @@
     <string name="artists">Artists</string>
     <string name="artworks">Artworks</string>
     <string name="search">Search</string>
+
+    <string name="year_formatted">Year: %s</string>
+    <string name="location_formatted">Location: %s</string>
     <string name="artworks_by_formatted">Artworks by %s:</string>
     <string name="by_formatted">by %s</string>
 </resources>

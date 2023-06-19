@@ -1,6 +1,5 @@
-package com.andrii_a.muze.ui.artist_detail
+package com.andrii_a.muze.ui.artwork_detail
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -10,56 +9,46 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
 import com.andrii_a.muze.ui.navigation.Screen
 import com.google.accompanist.systemuicontroller.SystemUiController
 
-fun NavGraphBuilder.artistDetailRoute(
+fun NavGraphBuilder.artworkDetailRoute(
     navController: NavController,
     systemUiController: SystemUiController
 ) {
     composable(
-        route = "${Screen.ArtistDetail.route}/{artistId}",
+        route = "${Screen.ArtworkDetail.route}/{artworkId}",
         arguments = listOf(
-            navArgument("artistId") {
+            navArgument("artworkId") {
                 type = NavType.IntType
                 nullable = false
             }
         )
-    ) { navBackStackEntry ->
+    ) {
         val statusBarColor = Color.Transparent
         val navigationBarColor = Color.Transparent
-        val isDark = isSystemInDarkTheme()
 
         LaunchedEffect(key1 = true) {
             systemUiController.setStatusBarColor(
                 color = statusBarColor,
-                darkIcons = !isDark
+                darkIcons = false
             )
 
             systemUiController.setNavigationBarColor(
                 color = navigationBarColor,
-                darkIcons = !isDark
+                darkIcons = false
             )
         }
 
-        val artistId = navBackStackEntry.arguments?.getInt("artistId") ?: 1
-
-        val viewModel: ArtistDetailViewModel = hiltViewModel()
+        val viewModel: ArtworkDetailViewModel = hiltViewModel()
         val loadResult = viewModel.loadResult.collectAsStateWithLifecycle()
 
-        val artworksFlow = viewModel.artworks
-
-        ArtistDetailScreen(
-            artistId = artistId,
+        ArtworkDetailScreen(
             loadResult = loadResult.value,
-            artworksFlow = artworksFlow,
-            navigateToArtistArtworks = {},
-            navigateToArtworkDetail = navController::navigateToArtworkDetail,
             navigateBack = navController::navigateUp
         )
     }
 }
 
-fun NavController.navigateToArtistDetail(artistId: Int) =
-    this.navigate("${Screen.ArtistDetail.route}/$artistId")
+fun NavController.navigateToArtworkDetail(artworkId: Int) =
+    this.navigate("${Screen.ArtworkDetail.route}/$artworkId")
