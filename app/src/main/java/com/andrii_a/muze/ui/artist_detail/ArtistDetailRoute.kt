@@ -56,6 +56,7 @@ fun NavGraphBuilder.artistDetailRoute(
             artworksFlow = artworksFlow,
             navigateToArtistArtworks = {},
             navigateToArtworkDetail = navController::navigateToArtworkDetail,
+            onRetryLoadingArtist = viewModel::getArtist,
             navigateBack = navController::navigateUp
         )
     }

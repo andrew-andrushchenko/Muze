@@ -52,7 +52,7 @@ class ArtistDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getArtist(artistId: Int) {
+    fun getArtist(artistId: Int) {
         artistsRepository.getArtist(artistId).onEach { result ->
             when (result) {
                 is BackendResult.Empty -> Unit
