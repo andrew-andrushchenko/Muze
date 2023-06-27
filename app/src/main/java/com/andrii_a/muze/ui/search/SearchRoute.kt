@@ -17,18 +17,12 @@ fun NavGraphBuilder.searchRoute(
     systemUiController: SystemUiController
 ) {
     composable(route = NavigationScreen.Search.route) {
-        val statusBarColor = Color.Transparent
-        val navigationBarColor = Color.Transparent
+        val systemBarsColor = Color.Transparent
         val areIconsDark = !isSystemInDarkTheme()
 
         LaunchedEffect(key1 = true) {
-            systemUiController.setStatusBarColor(
-                color = statusBarColor,
-                darkIcons = areIconsDark
-            )
-
-            systemUiController.setNavigationBarColor(
-                color = navigationBarColor,
+            systemUiController.setSystemBarsColor(
+                color = systemBarsColor,
                 darkIcons = areIconsDark
             )
         }
