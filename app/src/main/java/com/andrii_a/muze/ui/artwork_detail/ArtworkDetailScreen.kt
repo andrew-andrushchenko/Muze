@@ -367,7 +367,8 @@ fun BottomSection(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Info,
-                contentDescription = null
+                contentDescription = null,
+                tint = Color.White
             )
         }
 
