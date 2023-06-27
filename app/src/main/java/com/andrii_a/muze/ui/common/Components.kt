@@ -138,7 +138,7 @@ fun EmptyContentBanner(
 @Composable
 fun ErrorBanner(
     modifier: Modifier = Modifier,
-    message: String = stringResource(id = R.string.loading_error),
+    message: String = stringResource(id = R.string.error_banner_text),
     onRetry: () -> Unit
 ) {
     Column(

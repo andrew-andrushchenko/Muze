@@ -129,7 +129,7 @@ fun ErrorSection(
                     .align(Alignment.Center)
             ) {
                 Text(
-                    text = stringResource(id = R.string.loading_error),
+                    text = stringResource(id = R.string.error_banner_text),
                     style = MaterialTheme.typography.titleMedium,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
