@@ -11,15 +11,20 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +33,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,13 +49,14 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import com.andrii_a.muze.domain.models.Artwork
-import com.andrii_a.muze.ui.artworks.ArtworkItem
+import com.andrii_a.muze.ui.artworks.ArtworksList
+import com.andrii_a.muze.ui.common.ScrollToTopLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -100,17 +107,16 @@ fun SearchScreen(
                 }
 
                 SearchTabs(pagerState = pageState)
+
+                SearchPages(
+                    pagerState = pageState,
+                    artists = artists,
+                    artworks = artworks,
+                    navigateToArtistDetail = navigateToArtistDetail,
+                    navigateToArtworkDetail = navigateToArtworkDetail,
+                )
             }
         }
-
-        SearchPages(
-            pagerState = pageState,
-            artists = artists,
-            artworks = artworks,
-            navigateToArtistDetail = navigateToArtistDetail,
-            navigateToArtworkDetail = navigateToArtworkDetail,
-            modifier = Modifier.padding(top = 160.dp)
-        )
     }
 }
 
@@ -154,7 +160,7 @@ private fun SearchTabs(pagerState: PagerState) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
 private fun SearchPages(
     pagerState: PagerState,
@@ -165,7 +171,7 @@ private fun SearchPages(
     modifier: Modifier = Modifier
 ) {
     val artistsItems = artists.collectAsLazyPagingItems()
-    val artworksItems = artworks.collectAsLazyPagingItems()
+    val artworkItems = artworks.collectAsLazyPagingItems()
 
     HorizontalPager(
         state = pagerState,
@@ -173,59 +179,89 @@ private fun SearchPages(
     ) { pageIndex ->
         when (pageIndex) {
             SearchScreenTabs.Artists.ordinal -> {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = 16.dp,
-                        bottom = WindowInsets.systemBars.asPaddingValues()
-                            .calculateBottomPadding() + 80.dp,
-                    )
+                val listState = rememberLazyListState()
+
+                val pullRefreshState = rememberPullRefreshState(
+                    refreshing = artistsItems.loadState.refresh is LoadState.Loading,
+                    onRefresh = artistsItems::refresh,
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pullRefresh(pullRefreshState)
                 ) {
-                    items(
-                        count = artistsItems.itemCount,
-                        key = artistsItems.itemKey { it.id }
-                    ) { index ->
-                        val artist = artistsItems[index]
-                        artist?.let {
-                            ArtistItem(
-                                artist = artist,
-                                onClick = { navigateToArtistDetail(artist.id) },
-                                modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                            )
-                        }
+                    ScrollToTopLayout(
+                        listState = listState,
+                        contentPadding = PaddingValues(
+                            bottom = WindowInsets.navigationBars.asPaddingValues()
+                                .calculateBottomPadding() + 90.dp
+                        )
+                    ) {
+                        ArtistsList(
+                            lazyArtistItems = artistsItems,
+                            onArtistClick = navigateToArtistDetail,
+                            contentPadding = PaddingValues(
+                                top = 16.dp,
+                                bottom = WindowInsets.systemBars.asPaddingValues()
+                                    .calculateBottomPadding() + 150.dp,
+                            ),
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
+
+                    PullRefreshIndicator(
+                        refreshing = artistsItems.loadState.refresh is LoadState.Loading,
+                        state = pullRefreshState,
+                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
                 }
             }
 
             SearchScreenTabs.Artworks.ordinal -> {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        top = 16.dp,
-                        bottom = WindowInsets.systemBars.asPaddingValues()
-                            .calculateBottomPadding() + 80.dp,
-                    )
+                val listState = rememberLazyListState()
+
+                val pullRefreshState = rememberPullRefreshState(
+                    refreshing = artistsItems.loadState.refresh is LoadState.Loading,
+                    onRefresh = artistsItems::refresh,
+                )
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .pullRefresh(pullRefreshState)
                 ) {
-                    items(
-                        count = artworksItems.itemCount,
-                        key = artworksItems.itemKey { it.id }
-                    ) { index ->
-                        val artwork = artworksItems[index]
-                        artwork?.let {
-                            ArtworkItem(
-                                artwork = artwork,
-                                onArtworkClick = { navigateToArtworkDetail(artwork.id) },
-                                modifier = Modifier.padding(
-                                    start = 16.dp,
-                                    end = 16.dp,
-                                    bottom = 16.dp
-                                )
-                            )
-                        }
+                    ScrollToTopLayout(
+                        listState = listState,
+                        contentPadding = PaddingValues(
+                            bottom = WindowInsets.navigationBars.asPaddingValues()
+                                .calculateBottomPadding() + 90.dp
+                        )
+                    ) {
+                        ArtworksList(
+                            lazyArtworkItems = artworkItems,
+                            onArtworkClick = navigateToArtworkDetail,
+                            listState = listState,
+                            contentPadding = PaddingValues(
+                                top = 16.dp,
+                                bottom = WindowInsets.systemBars.asPaddingValues()
+                                    .calculateBottomPadding() + 150.dp,
+                            ),
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
+
+                    PullRefreshIndicator(
+                        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
+                        state = pullRefreshState,
+                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.align(Alignment.TopCenter)
+                    )
                 }
+
             }
 
             else -> throw IllegalStateException("Tab screen was not declared!")
