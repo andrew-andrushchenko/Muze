@@ -18,17 +18,17 @@ fun NavGraphBuilder.artistsRoute(
     composable(route = NavigationScreen.Artists.route) {
         val statusBarColor = Color.Transparent
         val navigationBarColor = Color.Transparent
-        val isDark = isSystemInDarkTheme()
+        val areIconsDark = !isSystemInDarkTheme()
 
         LaunchedEffect(key1 = true) {
             systemUiController.setStatusBarColor(
                 color = statusBarColor,
-                darkIcons = !isDark
+                darkIcons = areIconsDark
             )
 
             systemUiController.setNavigationBarColor(
                 color = navigationBarColor,
-                darkIcons = !isDark
+                darkIcons = areIconsDark
             )
         }
 
