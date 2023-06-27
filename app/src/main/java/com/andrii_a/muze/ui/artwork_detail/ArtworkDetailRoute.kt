@@ -1,5 +1,6 @@
 package com.andrii_a.muze.ui.artwork_detail
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,27 +25,39 @@ fun NavGraphBuilder.artworkDetailRoute(
                 nullable = false
             }
         )
-    ) {
-        val statusBarColor = Color.Transparent
-        val navigationBarColor = Color.Transparent
-
-        LaunchedEffect(key1 = true) {
-            systemUiController.setStatusBarColor(
-                color = statusBarColor,
-                darkIcons = false
-            )
-
-            systemUiController.setNavigationBarColor(
-                color = navigationBarColor,
-                darkIcons = false
-            )
-        }
-
+    ) { navBackStackEntry ->
         val viewModel: ArtworkDetailViewModel = hiltViewModel()
         val loadResult = viewModel.loadResult.collectAsStateWithLifecycle()
 
+        val systemBarsColor = Color.Transparent
+        val areIconsDark = !isSystemInDarkTheme()
+
+        LaunchedEffect(key1 = loadResult.value) {
+            when (loadResult.value) {
+                ArtworkLoadResult.Empty,
+                ArtworkLoadResult.Error,
+                ArtworkLoadResult.Loading -> {
+                    systemUiController.setSystemBarsColor(
+                        color = systemBarsColor,
+                        darkIcons = areIconsDark
+                    )
+                }
+
+                is ArtworkLoadResult.Success -> {
+                    systemUiController.setSystemBarsColor(
+                        color = systemBarsColor,
+                        darkIcons = false
+                    )
+                }
+            }
+        }
+
+        val artworkId = navBackStackEntry.arguments?.getInt("artworkId") ?: 1
+
         ArtworkDetailScreen(
+            artworkId = artworkId,
             loadResult = loadResult.value,
+            onRetryLoadingArtwork = viewModel::getArtwork,
             navigateBack = navController::navigateUp
         )
     }

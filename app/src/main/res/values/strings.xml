@@ -11,4 +11,7 @@
     <string name="by_formatted">by %s</string>
     <string name="type_artist_or_artwork_name">Type artist or artwork name</string>
     <string name="clear_search_field">Clear search field</string>
+
+    <string name="loading_error">Oops! Something went wrong, please check connection</string>
+    <string name="retry">Retry</string>
 </resources>

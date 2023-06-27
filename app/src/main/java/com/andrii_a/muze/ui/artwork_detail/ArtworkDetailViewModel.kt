@@ -37,7 +37,7 @@ class ArtworkDetailViewModel @Inject constructor(
         }
     }
 
-    private fun getArtwork(artworkId: Int) {
+    fun getArtwork(artworkId: Int) {
         artworksRepository.getArtwork(artworkId).onEach { result ->
             when (result) {
                 is BackendResult.Empty -> Unit
