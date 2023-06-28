@@ -218,7 +218,7 @@ fun MainSection(
         ) {
             val painter = rememberAsyncImagePainter(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(artwork.imageUrl)
+                    .data(artwork.image.url)
                     .size(Size.ORIGINAL)
                     .crossfade(durationMillis = 1000)
                     .build()

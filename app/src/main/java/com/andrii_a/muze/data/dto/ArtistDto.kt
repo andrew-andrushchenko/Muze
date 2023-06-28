@@ -7,8 +7,8 @@ data class ArtistDto(
     val name: String,
     val bornDateString: String?,
     val diedDateString: String?,
-    val portraitImageUrl: String,
+    val portraitImage: ImageDto,
     val bio: String
 ) {
-    fun toArtist(): Artist = Artist(id, name, bornDateString, diedDateString, portraitImageUrl, bio)
+    fun toArtist(): Artist = Artist(id, name, bornDateString, diedDateString, portraitImage.toImage(), bio)
 }

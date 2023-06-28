@@ -8,9 +8,9 @@ data class ArtworkDto(
     val name: String,
     val year: String?,
     val location: String,
-    val imageUrl: String,
+    val image: ImageDto,
     val description: String?,
     val artist: Artist
 ) {
-    fun toArtwork(): Artwork = Artwork(id, name, year, location, imageUrl, description, artist)
+    fun toArtwork(): Artwork = Artwork(id, name, year, location, image.toImage(), description, artist)
 }

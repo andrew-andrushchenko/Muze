@@ -5,6 +5,6 @@ data class Artist(
     val name: String,
     val bornDateString: String?,
     val diedDateString: String?,
-    val portraitImageUrl: String,
+    val portraitImage: Image,
     val bio: String
 )

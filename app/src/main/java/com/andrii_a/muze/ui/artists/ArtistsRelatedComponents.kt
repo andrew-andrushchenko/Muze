@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.PagerState
@@ -49,7 +48,7 @@ fun ArtistItem(
     Box {
         AsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
-                .data(artist.portraitImageUrl)
+                .data(artist.portraitImage.url)
                 .crossfade(durationMillis = 1000)
                 .scale(Scale.FILL)
                 .placeholder(ColorDrawable(Color.Gray.toArgb()))

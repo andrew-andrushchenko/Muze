@@ -129,7 +129,7 @@ fun ArtistItem(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(artist.portraitImageUrl)
+                    .data(artist.portraitImage.url)
                     .crossfade(durationMillis = 1000)
                     .scale(Scale.FILL)
                     .placeholder(ColorDrawable(Color.Gray.toArgb()))

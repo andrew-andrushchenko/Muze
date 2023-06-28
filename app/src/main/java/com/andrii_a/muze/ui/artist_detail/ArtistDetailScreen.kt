@@ -212,7 +212,7 @@ fun MainSection(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(artist.portraitImageUrl)
+                    .data(artist.portraitImage.url)
                     .crossfade(durationMillis = 1000)
                     .scale(Scale.FILL)
                     .placeholder(ColorDrawable(Color.GRAY))
@@ -293,7 +293,7 @@ fun MainSection(
                     val artwork = artworksSnapshotList[index]
                     artwork?.let {
                         SmallArtworkItem(
-                            imageUrl = artwork.imageUrl,
+                            imageUrl = artwork.image.url,
                             onClick = { navigateToArtworkDetail(artwork.id) },
                             modifier = Modifier.padding(
                                 end = 16.dp,

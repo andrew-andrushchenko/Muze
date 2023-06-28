@@ -5,7 +5,7 @@ data class Artwork(
     val name: String,
     val year: String?,
     val location: String,
-    val imageUrl: String,
+    val image: Image,
     val description: String?,
     val artist: Artist
 )

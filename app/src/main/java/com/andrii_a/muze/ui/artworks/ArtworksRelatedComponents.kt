@@ -130,7 +130,7 @@ fun ArtworkItem(
 
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(artwork.imageUrl)
+                    .data(artwork.image.url)
                     .crossfade(durationMillis = 1000)
                     .scale(Scale.FILL)
                     .placeholder(ColorDrawable(android.graphics.Color.GRAY))
