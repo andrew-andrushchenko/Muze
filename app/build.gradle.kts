@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -5,6 +7,7 @@ plugins {
     id("kotlin-parcelize")
     id("dagger.hilt.android.plugin")
 }
+lateinit var baseUrl: String
 
 android {
     namespace = "com.andrii_a.muze"
@@ -24,30 +27,47 @@ android {
     }
 
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+
+            baseUrl = gradleLocalProperties(rootDir).getProperty("base_debug_url")
+            buildConfigField("String", "BASE_URL", baseUrl)
+        }
+
         release {
             isMinifyEnabled = false
+
+            baseUrl = gradleLocalProperties(rootDir).getProperty("base_release_url")
+            buildConfigField("String", "BASE_URL", baseUrl)
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+
     kotlinOptions {
         jvmTarget = "17"
         freeCompilerArgs += "-opt-in=kotlin.RequiresOptIn"
         freeCompilerArgs += "-opt-in=kotlin.Experimental"
         freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
     }
+
     buildFeatures {
         compose = true
+        buildConfig = true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -56,7 +76,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
     implementation("androidx.activity:activity-compose:1.7.2")
