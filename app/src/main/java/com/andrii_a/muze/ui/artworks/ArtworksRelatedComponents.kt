@@ -394,9 +394,9 @@ private fun YearIndicatorText(
         color = MaterialTheme.colorScheme.onPrimary,
         overflow = TextOverflow.Ellipsis,
         modifier = modifier
-            .clip(RoundedCornerShape(50))
+            .clip(RoundedCornerShape(12.dp))
             .background(color = MaterialTheme.colorScheme.primary)
-            .padding(8.dp)
+            .padding(horizontal = 16.dp, vertical = 6.dp)
     )
 }
 
