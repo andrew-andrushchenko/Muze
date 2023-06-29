@@ -210,7 +210,7 @@ private fun DefaultArtworkItem(
     modifier: Modifier = Modifier
 ) {
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         onClick = onArtworkClick,
         modifier = modifier
     ) {
@@ -230,7 +230,7 @@ private fun DefaultArtworkItem(
                 ),
                 description = stringResource(id = R.string.artwork_item),
                 clickable = false,
-                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                 modifier = Modifier
                     .constrainAs(artworkImage) {
                         top.linkTo(parent.top)
