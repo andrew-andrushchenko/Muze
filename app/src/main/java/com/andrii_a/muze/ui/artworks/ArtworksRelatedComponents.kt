@@ -258,6 +258,8 @@ private fun DefaultArtworkItem(
                     top.linkTo(artworkImage.bottom, 8.dp)
                     bottom.linkTo(artistName.top, 0.dp)
                     start.linkTo(parent.start, 12.dp)
+                    end.linkTo(parent.end, 8.dp)
+                    width = Dimension.fillToConstraints
                 }
             )
 
