@@ -381,7 +381,7 @@ private fun GridArtworkItem(
 }
 
 @Composable
-fun YearIndicatorText(
+private fun YearIndicatorText(
     yearStr: String,
     modifier: Modifier = Modifier
 ) {
