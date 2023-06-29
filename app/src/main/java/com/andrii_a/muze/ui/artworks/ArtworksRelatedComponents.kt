@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -43,7 +42,6 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Scale
@@ -219,18 +217,21 @@ private fun DefaultArtworkItem(
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (artworkImage, artworkNameText, descriptionText, artistName, yearText) = createRefs()
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(artwork.image.url)
-                    .crossfade(durationMillis = 1000)
-                    .scale(Scale.FILL)
-                    .placeholder(ColorDrawable(android.graphics.Color.GRAY))
-                    .build(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
+            AspectRatioImage(
+                width = artwork.image.width.toFloat(),
+                height = artwork.image.height.toFloat(),
+                painter = rememberAsyncImagePainter(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(artwork.image.url)
+                        .crossfade(durationMillis = 1000)
+                        .scale(Scale.FILL)
+                        .placeholder(ColorDrawable(android.graphics.Color.GRAY))
+                        .build()
+                ),
+                description = stringResource(id = R.string.artwork_item),
+                clickable = false,
+                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
                 modifier = Modifier
-                    .fillMaxSize()
-                    .height(200.dp)
                     .constrainAs(artworkImage) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
