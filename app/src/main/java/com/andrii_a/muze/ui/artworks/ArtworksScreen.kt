@@ -145,7 +145,7 @@ fun ArtworksListContent(
                 onArtworkClick = onArtworkSelected,
                 listState = listState,
                 contentPadding = PaddingValues(
-                    top = contentPadding.calculateTopPadding(),
+                    top = contentPadding.calculateTopPadding() + 16.dp,
                     bottom = contentPadding.calculateBottomPadding() + 150.dp,
                     start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
                     end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
