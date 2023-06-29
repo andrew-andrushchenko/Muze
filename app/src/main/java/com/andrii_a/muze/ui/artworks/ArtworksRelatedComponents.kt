@@ -206,7 +206,7 @@ fun ArtworksStaggeredGrid(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DefaultArtworkItem(
+private fun DefaultArtworkItem(
     artwork: Artwork,
     onArtworkClick: () -> Unit,
     modifier: Modifier = Modifier
