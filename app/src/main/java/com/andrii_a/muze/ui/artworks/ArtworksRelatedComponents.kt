@@ -57,7 +57,7 @@ import com.andrii_a.muze.ui.common.ErrorItem
 import com.andrii_a.muze.ui.common.LoadingListItem
 
 @Composable
-fun ArtworksList(
+fun ArtworksColumn(
     lazyArtworkItems: LazyPagingItems<Artwork>,
     onArtworkClick: (Int) -> Unit,
     modifier: Modifier = Modifier,

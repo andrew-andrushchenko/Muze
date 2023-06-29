@@ -55,7 +55,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import com.andrii_a.muze.domain.models.Artwork
-import com.andrii_a.muze.ui.artworks.ArtworksList
+import com.andrii_a.muze.ui.artworks.ArtworksColumn
 import com.andrii_a.muze.ui.common.ScrollToTopLayout
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
@@ -240,7 +240,7 @@ private fun SearchPages(
                                 .calculateBottomPadding() + 90.dp
                         )
                     ) {
-                        ArtworksList(
+                        ArtworksColumn(
                             lazyArtworkItems = artworkItems,
                             onArtworkClick = navigateToArtworkDetail,
                             listState = listState,

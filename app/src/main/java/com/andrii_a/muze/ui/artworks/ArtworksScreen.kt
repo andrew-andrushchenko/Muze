@@ -140,7 +140,7 @@ fun ArtworksListContent(
                     .calculateBottomPadding() + 90.dp
             )
         ) {
-            ArtworksList(
+            ArtworksColumn(
                 lazyArtworkItems = artworks,
                 onArtworkClick = onArtworkSelected,
                 listState = listState,
