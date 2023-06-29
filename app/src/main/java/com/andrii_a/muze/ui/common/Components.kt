@@ -3,6 +3,8 @@ package com.andrii_a.muze.ui.common
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,9 +12,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -29,7 +34,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +48,41 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.andrii_a.muze.R
 import kotlinx.coroutines.launch
+
+@Composable
+fun AspectRatioImage(
+    width: Float,
+    height: Float,
+    description: String,
+    painter: Painter,
+    modifier: Modifier = Modifier,
+    shape: Shape = RoundedCornerShape(16.dp),
+    clickable: Boolean = true,
+    onClick: () -> Unit = {}
+) {
+    Box(modifier = modifier) {
+        val aspectRatio = width / height
+        val imageModifier = if (clickable) {
+            Modifier
+                .aspectRatio(aspectRatio)
+                .fillMaxWidth()
+                .clip(shape)
+                .clickable(onClick = onClick)
+        } else {
+            Modifier
+                .aspectRatio(aspectRatio)
+                .fillMaxWidth()
+                .clip(shape)
+        }
+
+        Image(
+            painter = painter,
+            contentDescription = description,
+            contentScale = ContentScale.Fit,
+            modifier = imageModifier
+        )
+    }
+}
 
 @Composable
 fun ScrollToTopLayout(
@@ -80,6 +124,53 @@ fun ScrollToTopLayout(
                 onClick = {
                     scope.launch {
                         listState.scrollToItem(0)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ScrollToTopLayout(
+    gridState: LazyStaggeredGridState,
+    contentPadding: PaddingValues,
+    list: @Composable () -> Unit
+) {
+    val scope = rememberCoroutineScope()
+
+    Box {
+        list()
+
+        val showButton = remember {
+            derivedStateOf {
+                gridState.firstVisibleItemIndex > 0
+            }
+        }
+
+        AnimatedVisibility(
+            visible = showButton.value,
+            enter = fadeIn(),
+            exit = fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(contentPadding)
+        ) {
+            ExtendedFloatingActionButton(
+                text = {
+                    Text(text = stringResource(id = R.string.to_top))
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowUpward,
+                        contentDescription = stringResource(id = R.string.to_top)
+                    )
+                },
+                containerColor = MaterialTheme.colorScheme.tertiary,
+                contentColor = MaterialTheme.colorScheme.onTertiary,
+                onClick = {
+                    scope.launch {
+                        gridState.scrollToItem(0)
                     }
                 }
             )
