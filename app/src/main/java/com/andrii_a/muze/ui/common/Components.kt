@@ -154,12 +154,12 @@ fun ScrollToTopLayout(
 fun ScrollToTopLayout(
     gridState: LazyStaggeredGridState,
     contentPadding: PaddingValues,
-    list: @Composable () -> Unit
+    grid: @Composable () -> Unit
 ) {
     val scope = rememberCoroutineScope()
 
     Box {
-        list()
+        grid()
 
         val showButton = remember {
             derivedStateOf {
