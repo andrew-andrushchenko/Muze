@@ -63,7 +63,7 @@ fun ArtistDetailScreen(
     artistId: Int,
     loadResult: ArtistLoadResult,
     artworksFlow: Flow<PagingData<Artwork>>,
-    navigateToArtistArtworks: (artistId: Int) -> Unit,
+    navigateToArtistArtworks: (artistId: Int, artistName: String) -> Unit,
     navigateToArtworkDetail: (artworkId: Int) -> Unit,
     onRetryLoadingArtist: (Int) -> Unit,
     navigateBack: () -> Unit
@@ -179,7 +179,7 @@ fun LoadingSection(navigateBack: () -> Unit) {
 fun MainSection(
     artist: Artist,
     artworksFlow: Flow<PagingData<Artwork>>,
-    navigateToArtistArtworks: (artistId: Int) -> Unit,
+    navigateToArtistArtworks: (artistId: Int, artistName: String) -> Unit,
     navigateToArtworkDetail: (artworkId: Int) -> Unit,
     navigateBack: () -> Unit
 ) {
@@ -307,7 +307,7 @@ fun MainSection(
                 item {
                     FloatingActionButton(
                         onClick = {
-                            navigateToArtistArtworks(artist.id)
+                            navigateToArtistArtworks(artist.id, artist.name)
                         },
                         content = {
                             Icon(

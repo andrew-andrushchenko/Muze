@@ -1,29 +1,31 @@
-package com.andrii_a.muze.ui.artist_detail
+package com.andrii_a.muze.ui.artworks_by_artist
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
-import com.andrii_a.muze.ui.artworks_by_artist.navigateToArtworksByArtist
 import com.andrii_a.muze.ui.navigation.Screen
 import com.google.accompanist.systemuicontroller.SystemUiController
 
-fun NavGraphBuilder.artistDetailRoute(
+fun NavGraphBuilder.artworksByArtistRoute(
     navController: NavController,
     systemUiController: SystemUiController
 ) {
     composable(
-        route = "${Screen.ArtistDetail.route}/{artistId}",
+        route = "${Screen.ArtworksByArtist.route}/{artistId}/{artistName}",
         arguments = listOf(
             navArgument("artistId") {
                 type = NavType.IntType
+                nullable = false
+            },
+            navArgument("artistName") {
+                type = NavType.StringType
                 nullable = false
             }
         )
@@ -38,24 +40,18 @@ fun NavGraphBuilder.artistDetailRoute(
             )
         }
 
-        val artistId = navBackStackEntry.arguments?.getInt("artistId") ?: 1
+        val artistName = navBackStackEntry.arguments?.getString("artistName").orEmpty()
 
-        val viewModel: ArtistDetailViewModel = hiltViewModel()
-        val loadResult = viewModel.loadResult.collectAsStateWithLifecycle()
+        val viewModel: ArtworksByArtistViewModel = hiltViewModel()
 
-        val artworksFlow = viewModel.artworks
-
-        ArtistDetailScreen(
-            artistId = artistId,
-            loadResult = loadResult.value,
-            artworksFlow = artworksFlow,
-            navigateToArtistArtworks = navController::navigateToArtworksByArtist,
-            navigateToArtworkDetail = navController::navigateToArtworkDetail,
-            onRetryLoadingArtist = viewModel::getArtist,
+        ArtworksByArtistScreen(
+            artistName = artistName,
+            artworksFlow = viewModel.artworks,
+            onArtworkSelected = navController::navigateToArtworkDetail,
             navigateBack = navController::navigateUp
         )
     }
 }
 
-fun NavController.navigateToArtistDetail(artistId: Int) =
-    this.navigate("${Screen.ArtistDetail.route}/$artistId")
+fun NavController.navigateToArtworksByArtist(artistId: Int, artistName: String) =
+    this.navigate("${Screen.ArtworksByArtist.route}/$artistId/$artistName")

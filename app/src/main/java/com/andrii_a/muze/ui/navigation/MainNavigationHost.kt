@@ -10,6 +10,7 @@ import com.andrii_a.muze.ui.artist_detail.artistDetailRoute
 import com.andrii_a.muze.ui.artists.artistsRoute
 import com.andrii_a.muze.ui.artwork_detail.artworkDetailRoute
 import com.andrii_a.muze.ui.artworks.artworksRoute
+import com.andrii_a.muze.ui.artworks_by_artist.artworksByArtistRoute
 import com.andrii_a.muze.ui.search.searchRoute
 import com.google.accompanist.systemuicontroller.SystemUiController
 
@@ -28,6 +29,7 @@ fun MainNavigationHost(
 
         artistDetailRoute(navHostController, systemUiController)
         artworkDetailRoute(navHostController, systemUiController)
+        artworksByArtistRoute(navHostController, systemUiController)
     }
 }
 
