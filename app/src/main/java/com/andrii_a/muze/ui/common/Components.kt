@@ -15,8 +15,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
@@ -55,7 +53,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -322,6 +319,7 @@ fun ErrorItem(
 fun ArtworksListContent(
     artworks: LazyPagingItems<Artwork>,
     contentPadding: PaddingValues = PaddingValues(),
+    addNavigationBarPadding: Boolean = false,
     onArtworkSelected: (artworkId: Int) -> Unit
 ) {
     val listState = rememberLazyListState()
@@ -340,7 +338,7 @@ fun ArtworksListContent(
             listState = listState,
             contentPadding = PaddingValues(
                 bottom = WindowInsets.navigationBars.asPaddingValues()
-                    .calculateBottomPadding() + 90.dp
+                    .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
             )
         ) {
             ArtworksColumn(
@@ -349,9 +347,7 @@ fun ArtworksListContent(
                 listState = listState,
                 contentPadding = PaddingValues(
                     top = contentPadding.calculateTopPadding() + 16.dp,
-                    bottom = contentPadding.calculateBottomPadding() + 150.dp,
-                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
-                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+                    bottom = contentPadding.calculateBottomPadding() + 150.dp
                 ),
                 modifier = Modifier.fillMaxSize()
             )
@@ -372,6 +368,7 @@ fun ArtworksListContent(
 fun ArtworksGridContent(
     artworks: LazyPagingItems<Artwork>,
     contentPadding: PaddingValues = PaddingValues(),
+    addNavigationBarPadding: Boolean = false,
     onArtworkSelected: (artworkId: Int) -> Unit
 ) {
     val gridState = rememberLazyStaggeredGridState()
@@ -390,7 +387,7 @@ fun ArtworksGridContent(
             gridState = gridState,
             contentPadding = PaddingValues(
                 bottom = WindowInsets.navigationBars.asPaddingValues()
-                    .calculateBottomPadding() + 90.dp
+                    .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
             )
         ) {
             ArtworksStaggeredGrid(

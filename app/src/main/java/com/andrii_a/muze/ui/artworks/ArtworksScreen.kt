@@ -77,6 +77,7 @@ fun ArtworksScreen(
                     ArtworksListContent(
                         artworks = artworks,
                         onArtworkSelected = onArtworkSelected,
+                        addNavigationBarPadding = true,
                         contentPadding = innerPadding
                     )
                 }
@@ -85,6 +86,7 @@ fun ArtworksScreen(
                     ArtworksGridContent(
                         artworks = artworks,
                         onArtworkSelected = onArtworkSelected,
+                        addNavigationBarPadding = true,
                         contentPadding = innerPadding
                     )
                 }
