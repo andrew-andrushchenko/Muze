@@ -12,21 +12,34 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
+import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -42,11 +55,17 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.andrii_a.muze.R
+import com.andrii_a.muze.domain.models.Artwork
+import com.andrii_a.muze.ui.artworks.ArtworksColumn
+import com.andrii_a.muze.ui.artworks.ArtworksStaggeredGrid
 import kotlinx.coroutines.launch
 
 @Composable
@@ -295,5 +314,105 @@ fun ErrorItem(
                 Text(text = stringResource(id = R.string.retry))
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ArtworksListContent(
+    artworks: LazyPagingItems<Artwork>,
+    contentPadding: PaddingValues = PaddingValues(),
+    onArtworkSelected: (artworkId: Int) -> Unit
+) {
+    val listState = rememberLazyListState()
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = artworks.loadState.refresh is LoadState.Loading,
+        onRefresh = artworks::refresh,
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .pullRefresh(pullRefreshState)
+    ) {
+        ScrollToTopLayout(
+            listState = listState,
+            contentPadding = PaddingValues(
+                bottom = WindowInsets.navigationBars.asPaddingValues()
+                    .calculateBottomPadding() + 90.dp
+            )
+        ) {
+            ArtworksColumn(
+                lazyArtworkItems = artworks,
+                onArtworkClick = onArtworkSelected,
+                listState = listState,
+                contentPadding = PaddingValues(
+                    top = contentPadding.calculateTopPadding() + 16.dp,
+                    bottom = contentPadding.calculateBottomPadding() + 150.dp,
+                    start = contentPadding.calculateStartPadding(LayoutDirection.Ltr),
+                    end = contentPadding.calculateEndPadding(LayoutDirection.Ltr)
+                ),
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        PullRefreshIndicator(
+            refreshing = artworks.loadState.refresh is LoadState.Loading,
+            state = pullRefreshState,
+            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ArtworksGridContent(
+    artworks: LazyPagingItems<Artwork>,
+    contentPadding: PaddingValues = PaddingValues(),
+    onArtworkSelected: (artworkId: Int) -> Unit
+) {
+    val gridState = rememberLazyStaggeredGridState()
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = artworks.loadState.refresh is LoadState.Loading,
+        onRefresh = artworks::refresh,
+    )
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .pullRefresh(pullRefreshState)
+    ) {
+        ScrollToTopLayout(
+            gridState = gridState,
+            contentPadding = PaddingValues(
+                bottom = WindowInsets.navigationBars.asPaddingValues()
+                    .calculateBottomPadding() + 90.dp
+            )
+        ) {
+            ArtworksStaggeredGrid(
+                lazyArtworkItems = artworks,
+                onArtworkClick = onArtworkSelected,
+                gridState = gridState,
+                contentPadding = PaddingValues(
+                    top = contentPadding.calculateTopPadding() + 16.dp,
+                    bottom = contentPadding.calculateBottomPadding() + 150.dp,
+                    start = 16.dp,
+                    end = 16.dp
+                ),
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        PullRefreshIndicator(
+            refreshing = artworks.loadState.refresh is LoadState.Loading,
+            state = pullRefreshState,
+            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }

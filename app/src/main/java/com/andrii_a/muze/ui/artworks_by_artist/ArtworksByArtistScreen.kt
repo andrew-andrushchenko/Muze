@@ -26,8 +26,8 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
 import com.andrii_a.muze.core.ArtworksLayoutType
 import com.andrii_a.muze.domain.models.Artwork
-import com.andrii_a.muze.ui.artworks.ArtworksGridContent
-import com.andrii_a.muze.ui.artworks.ArtworksListContent
+import com.andrii_a.muze.ui.common.ArtworksGridContent
+import com.andrii_a.muze.ui.common.ArtworksListContent
 import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
