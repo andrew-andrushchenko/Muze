@@ -39,7 +39,7 @@ import com.andrii_a.muze.ui.util.lifeYearsString
 
 @Composable
 fun ArtistsList(
-    lazyArtistItems: LazyPagingItems<Artist>,
+    artistItems: LazyPagingItems<Artist>,
     onArtistClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
@@ -50,14 +50,14 @@ fun ArtistsList(
         contentPadding = contentPadding,
         modifier = modifier
     ) {
-        when (lazyArtistItems.loadState.refresh) {
+        when (artistItems.loadState.refresh) {
             is LoadState.NotLoading -> {
-                if (lazyArtistItems.itemCount > 0) {
+                if (artistItems.itemCount > 0) {
                     items(
-                        count = lazyArtistItems.itemCount,
-                        key = lazyArtistItems.itemKey { it.id }
+                        count = artistItems.itemCount,
+                        key = artistItems.itemKey { it.id }
                     ) { index ->
-                        val artist = lazyArtistItems[index]
+                        val artist = artistItems[index]
                         artist?.let {
                             ArtistItem(
                                 artist = artist,
@@ -82,14 +82,14 @@ fun ArtistsList(
             is LoadState.Error -> {
                 item {
                     ErrorBanner(
-                        onRetry = lazyArtistItems::retry,
+                        onRetry = artistItems::retry,
                         modifier = Modifier.fillParentMaxSize()
                     )
                 }
             }
         }
 
-        when (lazyArtistItems.loadState.append) {
+        when (artistItems.loadState.append) {
             is LoadState.NotLoading -> Unit
 
             is LoadState.Loading -> {
@@ -101,7 +101,7 @@ fun ArtistsList(
             is LoadState.Error -> {
                 item {
                     ErrorItem(
-                        onRetry = lazyArtistItems::retry,
+                        onRetry = artistItems::retry,
                         modifier = Modifier
                             .fillParentMaxWidth()
                             .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)

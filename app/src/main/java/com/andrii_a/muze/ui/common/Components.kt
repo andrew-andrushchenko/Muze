@@ -317,7 +317,7 @@ fun ErrorItem(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ArtworksListContent(
-    artworks: LazyPagingItems<Artwork>,
+    artworkItems: LazyPagingItems<Artwork>,
     contentPadding: PaddingValues = PaddingValues(),
     addNavigationBarPadding: Boolean = false,
     onArtworkSelected: (artworkId: Int) -> Unit
@@ -325,8 +325,8 @@ fun ArtworksListContent(
     val listState = rememberLazyListState()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = artworks.loadState.refresh is LoadState.Loading,
-        onRefresh = artworks::refresh,
+        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
+        onRefresh = artworkItems::refresh,
     )
 
     Box(
@@ -342,7 +342,7 @@ fun ArtworksListContent(
             )
         ) {
             ArtworksColumn(
-                lazyArtworkItems = artworks,
+                lazyArtworkItems = artworkItems,
                 onArtworkClick = onArtworkSelected,
                 listState = listState,
                 contentPadding = PaddingValues(
@@ -354,7 +354,7 @@ fun ArtworksListContent(
         }
 
         PullRefreshIndicator(
-            refreshing = artworks.loadState.refresh is LoadState.Loading,
+            refreshing = artworkItems.loadState.refresh is LoadState.Loading,
             state = pullRefreshState,
             backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
             contentColor = MaterialTheme.colorScheme.onSurface,
@@ -366,7 +366,7 @@ fun ArtworksListContent(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ArtworksGridContent(
-    artworks: LazyPagingItems<Artwork>,
+    artworkItems: LazyPagingItems<Artwork>,
     contentPadding: PaddingValues = PaddingValues(),
     addNavigationBarPadding: Boolean = false,
     onArtworkSelected: (artworkId: Int) -> Unit
@@ -374,8 +374,8 @@ fun ArtworksGridContent(
     val gridState = rememberLazyStaggeredGridState()
 
     val pullRefreshState = rememberPullRefreshState(
-        refreshing = artworks.loadState.refresh is LoadState.Loading,
-        onRefresh = artworks::refresh,
+        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
+        onRefresh = artworkItems::refresh,
     )
 
     Box(
@@ -391,7 +391,7 @@ fun ArtworksGridContent(
             )
         ) {
             ArtworksStaggeredGrid(
-                lazyArtworkItems = artworks,
+                lazyArtworkItems = artworkItems,
                 onArtworkClick = onArtworkSelected,
                 gridState = gridState,
                 contentPadding = PaddingValues(
@@ -405,7 +405,7 @@ fun ArtworksGridContent(
         }
 
         PullRefreshIndicator(
-            refreshing = artworks.loadState.refresh is LoadState.Loading,
+            refreshing = artworkItems.loadState.refresh is LoadState.Loading,
             state = pullRefreshState,
             backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
             contentColor = MaterialTheme.colorScheme.onSurface,

@@ -69,13 +69,13 @@ fun ArtworksScreen(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
-        val artworks = artworksFlow.collectAsLazyPagingItems()
+        val artworkItems = artworksFlow.collectAsLazyPagingItems()
 
         AnimatedContent(targetState = layoutType, label = "") { layout ->
             when (layout) {
                 ArtworksLayoutType.DEFAULT -> {
                     ArtworksListContent(
-                        artworks = artworks,
+                        artworkItems = artworkItems,
                         onArtworkSelected = onArtworkSelected,
                         addNavigationBarPadding = true,
                         contentPadding = innerPadding
@@ -84,7 +84,7 @@ fun ArtworksScreen(
 
                 ArtworksLayoutType.STAGGERED_GRID -> {
                     ArtworksGridContent(
-                        artworks = artworks,
+                        artworkItems = artworkItems,
                         onArtworkSelected = onArtworkSelected,
                         addNavigationBarPadding = true,
                         contentPadding = innerPadding

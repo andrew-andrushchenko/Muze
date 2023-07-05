@@ -93,7 +93,7 @@ fun ArtworksByArtistScreen(
             when (layout) {
                 ArtworksLayoutType.DEFAULT -> {
                     ArtworksListContent(
-                        artworks = artworks,
+                        artworkItems = artworks,
                         onArtworkSelected = onArtworkSelected,
                         contentPadding = innerPadding
                     )
@@ -101,7 +101,7 @@ fun ArtworksByArtistScreen(
 
                 ArtworksLayoutType.STAGGERED_GRID -> {
                     ArtworksGridContent(
-                        artworks = artworks,
+                        artworkItems = artworks,
                         onArtworkSelected = onArtworkSelected,
                         contentPadding = innerPadding
                     )

@@ -199,7 +199,7 @@ private fun SearchPages(
                         )
                     ) {
                         ArtistsList(
-                            lazyArtistItems = artistsItems,
+                            artistItems = artistsItems,
                             onArtistClick = navigateToArtistDetail,
                             contentPadding = PaddingValues(
                                 top = 16.dp,
