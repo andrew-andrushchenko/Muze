@@ -19,7 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +42,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
@@ -54,6 +52,7 @@ import coil.size.Scale
 import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import com.andrii_a.muze.domain.models.Artwork
+import com.andrii_a.muze.ui.common.ErrorBanner
 import com.andrii_a.muze.ui.theme.BottleCapShape
 import com.andrii_a.muze.ui.util.lifeYearsString
 import kotlinx.coroutines.flow.Flow
@@ -116,33 +115,12 @@ fun ErrorSection(
             )
         }
     ) { innerPadding ->
-        Box(
+        ErrorBanner(
+            onRetry = onRetry,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .align(Alignment.Center)
-            ) {
-                Text(
-                    text = stringResource(id = R.string.error_banner_text),
-                    style = MaterialTheme.typography.titleMedium,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(onClick = onRetry) {
-                    Text(text = stringResource(id = R.string.retry))
-                }
-            }
-        }
+        )
     }
 }
 
