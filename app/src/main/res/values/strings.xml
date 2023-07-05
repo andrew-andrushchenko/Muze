@@ -1,19 +1,26 @@
 <resources>
     <string name="app_name">Muze</string>
 
+    <!--Navigation bar screens-->
     <string name="artists">Artists</string>
     <string name="artworks">Artworks</string>
     <string name="search">Search</string>
 
-    <string name="year_formatted">Year: %s</string>
+    <!--Artist detail-->
     <string name="location_formatted">Location: %s</string>
-    <string name="artworks_by_formatted">Artworks by %s:</string>
+
+    <!--Artwork detail-->
     <string name="by_formatted">by %s</string>
+    <string name="year_formatted">Year: %s</string>
+
+    <!--Search-->
     <string name="type_artist_or_artwork_name">Type artist or artwork name</string>
     <string name="clear_search_field">Clear search field</string>
 
-    <string name="retry">Retry</string>
+    <!--Common-->
+    <string name="artworks_by_formatted">Artworks by %s:</string>
 
+    <string name="retry">Retry</string>
     <string name="to_top">To top</string>
 
     <string name="error_banner_text">Oops! Something went wrong, please check connection</string>
