@@ -19,6 +19,14 @@
 
     <!--Common-->
     <string name="artworks_by_formatted">Artworks by %s:</string>
+    <string name="artist_portrait">Artist portrait</string>
+    <string name="navigation_icon">Navigation icon</string>
+    <string name="navigate_back">Navigate back</string>
+    <string name="change_layout_type">Change layout type</string>
+    <string name="show_all_artworks_by_artist">Show all artworks of the artist</string>
+    <string name="show_info_about_artwork">Show information about artwork</string>
+    <string name="zoom_to_fill">Zoom to fill</string>
+    <string name="search_icon">Search icon</string>
 
     <string name="retry">Retry</string>
     <string name="to_top">To top</string>

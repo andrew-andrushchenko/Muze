@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.rememberNavController
+import com.andrii_a.muze.R
 import com.andrii_a.muze.ui.navigation.MainNavigationHost
 import com.andrii_a.muze.ui.navigation.NavigationScreen
 import com.andrii_a.muze.ui.navigation.NavigationScreenRoutes
@@ -51,7 +51,7 @@ fun Muze() {
                                             item.iconSelected
                                         else
                                             item.iconUnselected,
-                                        contentDescription = null
+                                        contentDescription = stringResource(id = R.string.navigation_icon)
                                     )
                                 },
                                 label = { Text(text = stringResource(id = item.titleRes)) },

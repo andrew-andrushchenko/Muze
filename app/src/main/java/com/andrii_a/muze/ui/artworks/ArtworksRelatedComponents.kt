@@ -228,7 +228,6 @@ private fun DefaultArtworkItem(
                         .placeholder(ColorDrawable(android.graphics.Color.GRAY))
                         .build()
                 ),
-                description = stringResource(id = R.string.artwork_item),
                 clickable = false,
                 shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
                 modifier = Modifier
@@ -328,7 +327,7 @@ private fun ArtistRow(
 
         Image(
             painter = painter,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.artist_portrait),
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
@@ -360,7 +359,6 @@ private fun GridArtworkItem(
             AspectRatioImage(
                 width = artwork.image.width.toFloat(),
                 height = artwork.image.height.toFloat(),
-                description = stringResource(id = R.string.artwork_item),
                 onClick = onArtworkClick,
                 painter = rememberAsyncImagePainter(
                     model = ImageRequest.Builder(LocalContext.current)

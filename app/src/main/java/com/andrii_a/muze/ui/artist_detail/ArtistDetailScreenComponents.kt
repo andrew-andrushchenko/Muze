@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
+import com.andrii_a.muze.R
 import com.andrii_a.muze.ui.theme.CloverShape
 
 @Composable
@@ -28,7 +30,7 @@ fun SmallArtworkItem(
             .scale(Scale.FILL)
             .placeholder(ColorDrawable(Color.GRAY))
             .build(),
-        contentDescription = null,
+        contentDescription = stringResource(id = R.string.artwork_item),
         contentScale = ContentScale.Crop,
         modifier = modifier
             .size(128.dp)

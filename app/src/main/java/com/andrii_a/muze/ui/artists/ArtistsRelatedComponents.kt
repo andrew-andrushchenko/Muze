@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Density
@@ -56,6 +57,7 @@ import androidx.paging.compose.LazyPagingItems
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import coil.size.Scale
+import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import com.andrii_a.muze.ui.common.EmptyContentBanner
 import com.andrii_a.muze.ui.common.ErrorBanner
@@ -165,7 +167,7 @@ fun ArtistItem(
                 .scale(Scale.FILL)
                 .placeholder(ColorDrawable(Color.Gray.toArgb()))
                 .build(),
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.artist_portrait),
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .size(width = 300.dp, height = 400.dp)

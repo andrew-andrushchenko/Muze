@@ -101,7 +101,7 @@ fun SearchScreen(
                     active = active,
                     onActiveChange = { active = it },
                     placeholder = { Text(text = stringResource(id = R.string.type_artist_or_artwork_name)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search_icon)) },
                 ) {
 
                 }

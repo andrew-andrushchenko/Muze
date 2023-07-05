@@ -109,7 +109,7 @@ fun ErrorSection(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
+                            contentDescription = stringResource(id = R.string.navigate_back),
                         )
                     }
                 }
@@ -157,7 +157,7 @@ fun LoadingSection(navigateBack: () -> Unit) {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
+                            contentDescription = stringResource(id = R.string.navigate_back),
                         )
                     }
                 }
@@ -193,7 +193,7 @@ fun MainSection(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null
+                            contentDescription = stringResource(id = R.string.navigate_back)
                         )
                     }
                 },
@@ -217,7 +217,7 @@ fun MainSection(
                     .scale(Scale.FILL)
                     .placeholder(ColorDrawable(Color.GRAY))
                     .build(),
-                contentDescription = null,
+                contentDescription = stringResource(id = R.string.artist_portrait),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(250.dp)
@@ -312,7 +312,7 @@ fun MainSection(
                         content = {
                             Icon(
                                 imageVector = Icons.Default.ArrowForward,
-                                contentDescription = null
+                                contentDescription = stringResource(id = R.string.show_all_artworks_by_artist)
                             )
                         }
                     )

@@ -69,7 +69,6 @@ import kotlinx.coroutines.launch
 fun AspectRatioImage(
     width: Float,
     height: Float,
-    description: String,
     painter: Painter,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(16.dp),
@@ -93,7 +92,7 @@ fun AspectRatioImage(
 
         Image(
             painter = painter,
-            contentDescription = description,
+            contentDescription = stringResource(id = R.string.artwork_item),
             contentScale = ContentScale.Fit,
             modifier = imageModifier
         )

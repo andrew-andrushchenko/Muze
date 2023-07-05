@@ -113,7 +113,7 @@ fun ErrorSection(
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
+                            contentDescription = stringResource(id = R.string.navigate_back),
                         )
                     }
                 }
@@ -161,7 +161,7 @@ fun LoadingSection(navigateBack: () -> Unit) {
                     IconButton(onClick = navigateBack) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
+                            contentDescription = stringResource(id = R.string.navigate_back),
                         )
                     }
                 }
@@ -320,7 +320,7 @@ fun TopSection(
             IconButton(onClick = onNavigateBack) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = null,
+                    contentDescription = stringResource(id = R.string.navigate_back),
                 )
             }
         },
@@ -367,7 +367,7 @@ fun BottomSection(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Info,
-                contentDescription = null,
+                contentDescription = stringResource(id = R.string.show_info_about_artwork),
                 tint = Color.White
             )
         }
@@ -384,7 +384,7 @@ fun BottomSection(
         ) {
             Icon(
                 imageVector = zoomIcon,
-                contentDescription = null,
+                contentDescription = stringResource(id = R.string.zoom_to_fill),
                 tint = Color.White
             )
         }

@@ -59,7 +59,10 @@ fun ArtworksByArtistScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.navigate_back)
+                        )
                     }
                 },
                 actions = {
@@ -78,7 +81,7 @@ fun ArtworksByArtistScreen(
 
                         Icon(
                             imageVector = icon,
-                            contentDescription = null
+                            contentDescription = stringResource(id = R.string.change_layout_type)
                         )
                     }
                 },

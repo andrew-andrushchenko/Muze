@@ -57,7 +57,7 @@ fun ArtistRow(
 
         Image(
             painter = painter,
-            contentDescription = null,
+            contentDescription = stringResource(id = R.string.artist_portrait),
             modifier = Modifier
                 .size(24.dp)
                 .clip(CircleShape)
