@@ -2,35 +2,39 @@
 ![Screen 1](/screenshots/Collage1.png "Screen 1")
 ![Screen 2](/screenshots/Collage2.png "Screen 2")
 
-Client application for Muze REST Server API
-[MuzeServer](https://github.com/andrew-andrushchenko/MuzeServer)
+Art gallery client for
+[Muze REST Server](https://github.com/andrew-andrushchenko/MuzeServer) API.
 
 # Build
-Go to project's **local.properties** file and add these lines:
+Add these lines to the project's **local.properties** file:
 ```
 base_debug_url="[YOUR SERVER DEBUG API URL]"
 base_release_url="[YOUR SERVER RELEASE API URL]"
 ```
 
 > **Note**  
-> Muze was tested in a local network environment, thats why the next line is present in the app's Manifest:
+> Muze was tested in a local network environment not using HTTPS, thats why the next line is present in the app's Manifest:
 > ```
 > android:usesCleartextTraffic="true"
 > ```
-> Make sure to remove it if you're going to run your server using HTTPS
+> Make sure you remove it if you're going to run your server using HTTPS
 
 # Technology stack
 * Kotlin
 * Jetpack Compose (with Material You)
 * Coroutines
 * Dagger Hilt
-* Retrofit
+* Retrofit 2
 * Paging 3
 
+# Special thanks
+[Albert Chang](https://github.com/mxalbert1996) and [Tlaster](https://github.com/Tlaster)
+for the [Zoomable compostable](https://github.com/mxalbert1996/Zoomable)
 # License
 ```
 MIT License
-
+Copyright (c) 2021 Tlaster
+Copyright (c) 2022 Albert Chang
 Copyright (c) 2023 Andrii Andrushchenko
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
