@@ -32,8 +32,8 @@ class ArtworkDetailViewModel @Inject constructor(
     val loadResult: StateFlow<ArtworkLoadResult> = _loadResult.asStateFlow()
 
     init {
-        savedStateHandle.get<Int>("artworkId")?.let { artistId ->
-            getArtwork(artistId)
+        savedStateHandle.get<Int>("artworkId")?.let { artworkId ->
+            getArtwork(artworkId)
         }
     }
 
