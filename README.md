@@ -29,7 +29,7 @@ base_release_url="[YOUR SERVER RELEASE API URL]"
 
 # Special thanks
 [Albert Chang](https://github.com/mxalbert1996) and [Tlaster](https://github.com/Tlaster)
-for the [Zoomable compostable](https://github.com/mxalbert1996/Zoomable)
+for the [Zoomable composable component](https://github.com/mxalbert1996/Zoomable)
 # License
 ```
 MIT License
