@@ -25,19 +25,14 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.staggeredgrid.LazyStaggeredGridState
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -54,7 +49,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -313,7 +307,6 @@ fun ErrorItem(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ArtworksListContent(
     artworkItems: LazyPagingItems<Artwork>,
@@ -323,46 +316,26 @@ fun ArtworksListContent(
 ) {
     val listState = rememberLazyListState()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
-        onRefresh = artworkItems::refresh,
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .pullRefresh(pullRefreshState)
+    ScrollToTopLayout(
+        listState = listState,
+        contentPadding = PaddingValues(
+            bottom = WindowInsets.navigationBars.asPaddingValues()
+                .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
+        )
     ) {
-        ScrollToTopLayout(
+        ArtworksColumn(
+            lazyArtworkItems = artworkItems,
+            onArtworkClick = onArtworkSelected,
             listState = listState,
             contentPadding = PaddingValues(
-                bottom = WindowInsets.navigationBars.asPaddingValues()
-                    .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
-            )
-        ) {
-            ArtworksColumn(
-                lazyArtworkItems = artworkItems,
-                onArtworkClick = onArtworkSelected,
-                listState = listState,
-                contentPadding = PaddingValues(
-                    top = contentPadding.calculateTopPadding() + 16.dp,
-                    bottom = contentPadding.calculateBottomPadding() + 150.dp
-                ),
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        PullRefreshIndicator(
-            refreshing = artworkItems.loadState.refresh is LoadState.Loading,
-            state = pullRefreshState,
-            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.TopCenter)
+                top = contentPadding.calculateTopPadding() + 16.dp,
+                bottom = contentPadding.calculateBottomPadding() + 150.dp
+            ),
+            modifier = Modifier.fillMaxSize()
         )
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ArtworksGridContent(
     artworkItems: LazyPagingItems<Artwork>,
@@ -372,43 +345,24 @@ fun ArtworksGridContent(
 ) {
     val gridState = rememberLazyStaggeredGridState()
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
-        onRefresh = artworkItems::refresh,
-    )
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .pullRefresh(pullRefreshState)
+    ScrollToTopLayout(
+        gridState = gridState,
+        contentPadding = PaddingValues(
+            bottom = WindowInsets.navigationBars.asPaddingValues()
+                .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
+        )
     ) {
-        ScrollToTopLayout(
+        ArtworksStaggeredGrid(
+            lazyArtworkItems = artworkItems,
+            onArtworkClick = onArtworkSelected,
             gridState = gridState,
             contentPadding = PaddingValues(
-                bottom = WindowInsets.navigationBars.asPaddingValues()
-                    .calculateBottomPadding() + if (addNavigationBarPadding) 90.dp else 0.dp
-            )
-        ) {
-            ArtworksStaggeredGrid(
-                lazyArtworkItems = artworkItems,
-                onArtworkClick = onArtworkSelected,
-                gridState = gridState,
-                contentPadding = PaddingValues(
-                    top = contentPadding.calculateTopPadding() + 16.dp,
-                    bottom = contentPadding.calculateBottomPadding() + 150.dp,
-                    start = 16.dp,
-                    end = 16.dp
-                ),
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        PullRefreshIndicator(
-            refreshing = artworkItems.loadState.refresh is LoadState.Loading,
-            state = pullRefreshState,
-            backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.TopCenter)
+                top = contentPadding.calculateTopPadding() + 16.dp,
+                bottom = contentPadding.calculateBottomPadding() + 150.dp,
+                start = 16.dp,
+                end = 16.dp
+            ),
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

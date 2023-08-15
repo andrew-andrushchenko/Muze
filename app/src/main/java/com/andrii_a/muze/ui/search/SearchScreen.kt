@@ -19,12 +19,8 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -33,7 +29,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,7 +44,6 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
@@ -160,7 +154,7 @@ private fun SearchTabs(pagerState: PagerState) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SearchPages(
     pagerState: PagerState,
@@ -181,41 +175,22 @@ private fun SearchPages(
             SearchScreenTabs.Artists.ordinal -> {
                 val listState = rememberLazyListState()
 
-                val pullRefreshState = rememberPullRefreshState(
-                    refreshing = artistsItems.loadState.refresh is LoadState.Loading,
-                    onRefresh = artistsItems::refresh,
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .pullRefresh(pullRefreshState)
+                ScrollToTopLayout(
+                    listState = listState,
+                    contentPadding = PaddingValues(
+                        bottom = WindowInsets.navigationBars.asPaddingValues()
+                            .calculateBottomPadding() + 90.dp
+                    )
                 ) {
-                    ScrollToTopLayout(
-                        listState = listState,
+                    ArtistsList(
+                        artistItems = artistsItems,
+                        onArtistClick = navigateToArtistDetail,
                         contentPadding = PaddingValues(
-                            bottom = WindowInsets.navigationBars.asPaddingValues()
-                                .calculateBottomPadding() + 90.dp
-                        )
-                    ) {
-                        ArtistsList(
-                            artistItems = artistsItems,
-                            onArtistClick = navigateToArtistDetail,
-                            contentPadding = PaddingValues(
-                                top = 16.dp,
-                                bottom = WindowInsets.systemBars.asPaddingValues()
-                                    .calculateBottomPadding() + 150.dp,
-                            ),
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-
-                    PullRefreshIndicator(
-                        refreshing = artistsItems.loadState.refresh is LoadState.Loading,
-                        state = pullRefreshState,
-                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.align(Alignment.TopCenter)
+                            top = 16.dp,
+                            bottom = WindowInsets.systemBars.asPaddingValues()
+                                .calculateBottomPadding() + 150.dp,
+                        ),
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
             }
@@ -223,42 +198,23 @@ private fun SearchPages(
             SearchScreenTabs.Artworks.ordinal -> {
                 val listState = rememberLazyListState()
 
-                val pullRefreshState = rememberPullRefreshState(
-                    refreshing = artistsItems.loadState.refresh is LoadState.Loading,
-                    onRefresh = artistsItems::refresh,
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .pullRefresh(pullRefreshState)
+                ScrollToTopLayout(
+                    listState = listState,
+                    contentPadding = PaddingValues(
+                        bottom = WindowInsets.navigationBars.asPaddingValues()
+                            .calculateBottomPadding() + 90.dp
+                    )
                 ) {
-                    ScrollToTopLayout(
+                    ArtworksColumn(
+                        lazyArtworkItems = artworkItems,
+                        onArtworkClick = navigateToArtworkDetail,
                         listState = listState,
                         contentPadding = PaddingValues(
-                            bottom = WindowInsets.navigationBars.asPaddingValues()
-                                .calculateBottomPadding() + 90.dp
-                        )
-                    ) {
-                        ArtworksColumn(
-                            lazyArtworkItems = artworkItems,
-                            onArtworkClick = navigateToArtworkDetail,
-                            listState = listState,
-                            contentPadding = PaddingValues(
-                                top = 16.dp,
-                                bottom = WindowInsets.systemBars.asPaddingValues()
-                                    .calculateBottomPadding() + 150.dp,
-                            ),
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-
-                    PullRefreshIndicator(
-                        refreshing = artworkItems.loadState.refresh is LoadState.Loading,
-                        state = pullRefreshState,
-                        backgroundColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp),
-                        contentColor = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.align(Alignment.TopCenter)
+                            top = 16.dp,
+                            bottom = WindowInsets.systemBars.asPaddingValues()
+                                .calculateBottomPadding() + 150.dp,
+                        ),
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
 
