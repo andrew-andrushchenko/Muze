@@ -1,7 +1,6 @@
 package com.andrii_a.muze.ui.artists
 
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -69,7 +68,7 @@ import com.andrii_a.muze.ui.util.startOffsetForPage
 import kotlin.math.absoluteValue
 import kotlin.math.sqrt
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun ArtistsPager(
     artistItems: LazyPagingItems<Artist>,
@@ -224,7 +223,6 @@ fun ArtistItem(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CircleIndicator(
     modifier: Modifier = Modifier,

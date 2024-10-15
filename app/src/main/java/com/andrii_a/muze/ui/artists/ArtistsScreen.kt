@@ -1,6 +1,5 @@
 package com.andrii_a.muze.ui.artists
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -20,7 +19,7 @@ import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistsScreen(
     artistsFlow: Flow<PagingData<Artist>>,

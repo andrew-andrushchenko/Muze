@@ -202,7 +202,6 @@ fun ArtworksStaggeredGrid(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DefaultArtworkItem(
     artwork: Artwork,
@@ -343,7 +342,6 @@ private fun ArtistRow(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun GridArtworkItem(
     artwork: Artwork,

@@ -1,7 +1,6 @@
 package com.andrii_a.muze.ui.search
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +54,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     query: StateFlow<String>,
@@ -113,7 +112,6 @@ fun SearchScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SearchTabs(pagerState: PagerState) {
     val coroutineScope = rememberCoroutineScope()
@@ -153,7 +151,6 @@ private fun SearchTabs(pagerState: PagerState) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SearchPages(
     pagerState: PagerState,
