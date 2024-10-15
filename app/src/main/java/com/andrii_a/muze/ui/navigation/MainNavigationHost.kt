@@ -12,12 +12,10 @@ import com.andrii_a.muze.ui.artwork_detail.artworkDetailRoute
 import com.andrii_a.muze.ui.artworks.artworksRoute
 import com.andrii_a.muze.ui.artworks_by_artist.artworksByArtistRoute
 import com.andrii_a.muze.ui.search.searchRoute
-import com.google.accompanist.systemuicontroller.SystemUiController
 
 @Composable
 fun MainNavigationHost(
     navHostController: NavHostController,
-    systemUiController: SystemUiController,
     modifier: Modifier = Modifier
 ) {
     NavHost(
@@ -25,25 +23,24 @@ fun MainNavigationHost(
         startDestination = NAVIGATION_BAR_GRAPH_ROUTE,
         modifier = modifier
     ) {
-        navigationBarGraph(navHostController, systemUiController)
+        navigationBarGraph(navHostController)
 
-        artistDetailRoute(navHostController, systemUiController)
-        artworkDetailRoute(navHostController, systemUiController)
-        artworksByArtistRoute(navHostController, systemUiController)
+        artistDetailRoute(navHostController)
+        artworkDetailRoute(navHostController)
+        artworksByArtistRoute(navHostController)
     }
 }
 
 fun NavGraphBuilder.navigationBarGraph(
-    navHostController: NavHostController,
-    systemUiController: SystemUiController
+    navHostController: NavHostController
 ) {
     navigation(
         route = NAVIGATION_BAR_GRAPH_ROUTE,
         startDestination = NavigationScreen.Artists.route
     ) {
-        artistsRoute(navHostController, systemUiController)
-        artworksRoute(navHostController, systemUiController)
-        searchRoute(navHostController, systemUiController)
+        artistsRoute(navHostController)
+        artworksRoute(navHostController)
+        searchRoute(navHostController)
     }
 }
 

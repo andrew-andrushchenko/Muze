@@ -1,29 +1,27 @@
 package com.andrii_a.muze.ui.artists
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.andrii_a.muze.ui.artist_detail.navigateToArtistDetail
 import com.andrii_a.muze.ui.navigation.NavigationScreen
-import com.google.accompanist.systemuicontroller.SystemUiController
 
 fun NavGraphBuilder.artistsRoute(
-    navController: NavController,
-    systemUiController: SystemUiController
+    navController: NavController
 ) {
     composable(route = NavigationScreen.Artists.route) {
-        val systemBarsColor = Color.Transparent
-        val areIconsDark = !isSystemInDarkTheme()
+        val view = LocalView.current
+        val shouldUseDarkIcons = !isSystemInDarkTheme()
 
         LaunchedEffect(key1 = true) {
-            systemUiController.setSystemBarsColor(
-                color = systemBarsColor,
-                darkIcons = areIconsDark
-            )
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = shouldUseDarkIcons
         }
 
         val viewModel: ArtistsViewModel = hiltViewModel()

@@ -21,7 +21,6 @@ import com.andrii_a.muze.ui.navigation.NavigationScreen
 import com.andrii_a.muze.ui.navigation.NavigationScreenRoutes
 import com.andrii_a.muze.ui.theme.MuzeTheme
 import com.andrii_a.muze.ui.util.currentRoute
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun Muze() {
@@ -30,20 +29,16 @@ fun Muze() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            val systemUiController = rememberSystemUiController()
             val navController = rememberNavController()
 
             Box(modifier = Modifier.imePadding()) {
-                MainNavigationHost(
-                    navHostController = navController,
-                    systemUiController = systemUiController
-                )
+                MainNavigationHost(navHostController = navController)
 
                 if (navController.currentRoute in NavigationScreenRoutes) {
                     NavigationBar(
                         modifier = Modifier.align(Alignment.BottomCenter)
                     ) {
-                        NavigationScreen.values().forEach { item ->
+                        NavigationScreen.entries.forEach { item ->
                             NavigationBarItem(
                                 icon = {
                                     Icon(

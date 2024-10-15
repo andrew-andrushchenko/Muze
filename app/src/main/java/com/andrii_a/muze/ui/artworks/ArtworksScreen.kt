@@ -2,8 +2,8 @@ package com.andrii_a.muze.ui.artworks
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.ViewCompact
-import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,7 +55,7 @@ fun ArtworksScreen(
                     ) {
                         val icon = when (layoutType) {
                             ArtworksLayoutType.DEFAULT -> Icons.Outlined.ViewCompact
-                            ArtworksLayoutType.STAGGERED_GRID -> Icons.Outlined.ViewList
+                            ArtworksLayoutType.STAGGERED_GRID -> Icons.AutoMirrored.Outlined.ViewList
                         }
 
                         Icon(

@@ -1,8 +1,9 @@
 package com.andrii_a.muze.ui.artwork_detail
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import android.app.Activity
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -11,11 +12,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.andrii_a.muze.ui.navigation.Screen
-import com.google.accompanist.systemuicontroller.SystemUiController
 
 fun NavGraphBuilder.artworkDetailRoute(
-    navController: NavController,
-    systemUiController: SystemUiController
+    navController: NavController
 ) {
     composable(
         route = "${Screen.ArtworkDetail.route}/{artworkId}",
@@ -29,25 +28,22 @@ fun NavGraphBuilder.artworkDetailRoute(
         val viewModel: ArtworkDetailViewModel = hiltViewModel()
         val loadResult = viewModel.loadResult.collectAsStateWithLifecycle()
 
-        val systemBarsColor = Color.Transparent
-        val areIconsDark = !isSystemInDarkTheme()
+        val view = LocalView.current
+        //val systemBarsColor = Color.Transparent
+        //val areIconsDark = !isSystemInDarkTheme()
 
         LaunchedEffect(key1 = loadResult.value) {
             when (loadResult.value) {
                 ArtworkLoadResult.Empty,
                 ArtworkLoadResult.Error,
                 ArtworkLoadResult.Loading -> {
-                    systemUiController.setSystemBarsColor(
-                        color = systemBarsColor,
-                        darkIcons = areIconsDark
-                    )
+                    val window = (view.context as Activity).window
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
                 }
 
                 is ArtworkLoadResult.Success -> {
-                    systemUiController.setSystemBarsColor(
-                        color = systemBarsColor,
-                        darkIcons = false
-                    )
+                    val window = (view.context as Activity).window
+                    WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false
                 }
             }
         }

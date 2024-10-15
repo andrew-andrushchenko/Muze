@@ -2,9 +2,9 @@ package com.andrii_a.muze.ui.artworks_by_artist
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.ViewList
 import androidx.compose.material.icons.outlined.ViewCompact
-import androidx.compose.material.icons.outlined.ViewList
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -60,7 +60,7 @@ fun ArtworksByArtistScreen(
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.navigate_back)
                         )
                     }
@@ -76,7 +76,7 @@ fun ArtworksByArtistScreen(
                     ) {
                         val icon = when (layoutType) {
                             ArtworksLayoutType.DEFAULT -> Icons.Outlined.ViewCompact
-                            ArtworksLayoutType.STAGGERED_GRID -> Icons.Outlined.ViewList
+                            ArtworksLayoutType.STAGGERED_GRID -> Icons.AutoMirrored.Outlined.ViewList
                         }
 
                         Icon(

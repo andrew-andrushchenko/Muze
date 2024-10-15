@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
@@ -25,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -39,11 +39,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.isContainer
+import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
@@ -65,51 +65,50 @@ fun SearchScreen(
     navigateToArtistDetail: (artistId: Int) -> Unit,
     navigateToArtworkDetail: (artworkId: Int) -> Unit
 ) {
-    val pageState = rememberPagerState(initialPage = 0) { SearchScreenTabs.values().size }
+    val pageState = rememberPagerState(initialPage = 0) { SearchScreenTabs.entries.size }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        // Talkback focus order sorts based on x and y position before considering z-index. The
-        // extra Box with semantics and fillMaxWidth is a workaround to get the search bar to focus
-        // before the content.
-        Box(
-            modifier = Modifier
-                .semantics {
-                    @Suppress("DEPRECATION")
-                    isContainer = true
-                }
-                .zIndex(1f)
-                .fillMaxWidth()
-        ) {
-            var text by remember { mutableStateOf(query.value) }
-            var active by rememberSaveable { mutableStateOf(false) }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .semantics { isTraversalGroup = true }
+    ) {
+        var text by remember { mutableStateOf(query.value) }
+        var active by rememberSaveable { mutableStateOf(false) }
 
-            Column {
-                SearchBar(
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    query = text,
-                    onQueryChange = { text = it },
-                    onSearch = {
-                        active = false
-                        onQueryChanged(text)
-                    },
-                    active = active,
-                    onActiveChange = { active = it },
-                    placeholder = { Text(text = stringResource(id = R.string.type_artist_or_artwork_name)) },
-                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search_icon)) },
-                ) {
+        Column {
+            SearchBar(
+                inputField = {
+                    SearchBarDefaults.InputField(
+                        query = text,
+                        onQueryChange = { text = it },
+                        onSearch = {
+                            active = false
+                            onQueryChanged(text)
+                        },
+                        expanded = active,
+                        onExpandedChange = { active = it },
+                        placeholder = { Text(text = stringResource(id = R.string.type_artist_or_artwork_name)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search_icon)) },
+                    )
+                },
+                expanded = active,
+                onExpandedChange = { active = it },
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .semantics { traversalIndex = -1f },
+            ) {
 
-                }
-
-                SearchTabs(pagerState = pageState)
-
-                SearchPages(
-                    pagerState = pageState,
-                    artists = artists,
-                    artworks = artworks,
-                    navigateToArtistDetail = navigateToArtistDetail,
-                    navigateToArtworkDetail = navigateToArtworkDetail,
-                )
             }
+
+            SearchTabs(pagerState = pageState)
+
+            SearchPages(
+                pagerState = pageState,
+                artists = artists,
+                artworks = artworks,
+                navigateToArtistDetail = navigateToArtistDetail,
+                navigateToArtworkDetail = navigateToArtworkDetail,
+            )
         }
     }
 }
@@ -134,7 +133,7 @@ private fun SearchTabs(pagerState: PagerState) {
             )
         }
     ) {
-        SearchScreenTabs.values().forEachIndexed { index, tabPage ->
+        SearchScreenTabs.entries.forEachIndexed { index, tabPage ->
             Tab(
                 selected = index == pagerState.currentPage,
                 onClick = {

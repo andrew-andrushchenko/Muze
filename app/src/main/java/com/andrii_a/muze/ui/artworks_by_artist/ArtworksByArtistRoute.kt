@@ -1,8 +1,10 @@
 package com.andrii_a.muze.ui.artworks_by_artist
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -11,11 +13,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
 import com.andrii_a.muze.ui.navigation.Screen
-import com.google.accompanist.systemuicontroller.SystemUiController
 
 fun NavGraphBuilder.artworksByArtistRoute(
-    navController: NavController,
-    systemUiController: SystemUiController
+    navController: NavController
 ) {
     composable(
         route = "${Screen.ArtworksByArtist.route}/{artistId}/{artistName}",
@@ -30,14 +30,12 @@ fun NavGraphBuilder.artworksByArtistRoute(
             }
         )
     ) { navBackStackEntry ->
-        val systemBarsColor = Color.Transparent
-        val areIconsDark = !isSystemInDarkTheme()
+        val view = LocalView.current
+        val shouldUseDarkIcons = !isSystemInDarkTheme()
 
         LaunchedEffect(key1 = true) {
-            systemUiController.setSystemBarsColor(
-                color = systemBarsColor,
-                darkIcons = areIconsDark
-            )
+            val window = (view.context as Activity).window
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = shouldUseDarkIcons
         }
 
         val artistName = navBackStackEntry.arguments?.getString("artistName").orEmpty()

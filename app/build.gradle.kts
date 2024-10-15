@@ -112,11 +112,6 @@ dependencies {
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
-    // Accompainst libs
-    implementation(libs.accompanist.navigation.material)
-    implementation(libs.accompanist.systemuicontroller)
-    implementation(libs.accompanist.permissions)
-
     // Dagger Hilt
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
