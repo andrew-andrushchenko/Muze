@@ -18,9 +18,10 @@ import androidx.navigation.compose.rememberNavController
 import com.andrii_a.muze.R
 import com.andrii_a.muze.ui.navigation.MainNavigationHost
 import com.andrii_a.muze.ui.navigation.NavigationScreen
-import com.andrii_a.muze.ui.navigation.NavigationScreenRoutes
 import com.andrii_a.muze.ui.theme.MuzeTheme
-import com.andrii_a.muze.ui.util.currentRoute
+import com.andrii_a.muze.ui.util.NavigationScreenClassNames
+import com.andrii_a.muze.ui.util.className
+import com.andrii_a.muze.ui.util.currentScreenClassName
 
 @Composable
 fun Muze() {
@@ -34,25 +35,25 @@ fun Muze() {
             Box(modifier = Modifier.imePadding()) {
                 MainNavigationHost(navHostController = navController)
 
-                if (navController.currentRoute in NavigationScreenRoutes) {
+                if (navController.currentScreenClassName in NavigationScreenClassNames) {
                     NavigationBar(
                         modifier = Modifier.align(Alignment.BottomCenter)
                     ) {
-                        NavigationScreen.entries.forEach { item ->
+                        NavigationScreen.entries.forEach { screen ->
                             NavigationBarItem(
                                 icon = {
                                     Icon(
-                                        imageVector = if (navController.currentRoute == item.route)
-                                            item.iconSelected
+                                        imageVector = if (navController.currentScreenClassName == screen.className)
+                                            screen.iconSelected
                                         else
-                                            item.iconUnselected,
+                                            screen.iconUnselected,
                                         contentDescription = stringResource(id = R.string.navigation_icon)
                                     )
                                 },
-                                label = { Text(text = stringResource(id = item.titleRes)) },
-                                selected = navController.currentRoute == item.route,
+                                label = { Text(text = stringResource(id = screen.titleRes)) },
+                                selected = navController.currentScreenClassName == screen.className,
                                 onClick = {
-                                    navController.navigate(item.route) {
+                                    navController.navigate(screen.screen) {
                                         launchSingleTop = true
                                         restoreState = true
                                         popUpTo(navController.graph.findStartDestination().id) {

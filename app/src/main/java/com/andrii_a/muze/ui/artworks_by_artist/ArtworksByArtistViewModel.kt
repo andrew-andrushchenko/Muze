@@ -3,8 +3,10 @@ package com.andrii_a.muze.ui.artworks_by_artist
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.andrii_a.muze.domain.repository.ArtworksRepository
+import com.andrii_a.muze.ui.navigation.Screen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
@@ -21,10 +23,10 @@ class ArtworksByArtistViewModel @Inject constructor(
     private val _artistId: MutableStateFlow<Int> = MutableStateFlow(0)
 
     init {
-        savedStateHandle.get<Int>("artistId")?.let { id ->
-            viewModelScope.launch {
-                _artistId.update { id }
-            }
+        val artistId = savedStateHandle.toRoute<Screen.ArtworksByArtist>().artistId
+
+        viewModelScope.launch {
+            _artistId.update { artistId }
         }
     }
 

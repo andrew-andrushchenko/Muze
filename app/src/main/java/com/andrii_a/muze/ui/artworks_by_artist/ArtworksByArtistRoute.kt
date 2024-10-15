@@ -8,28 +8,14 @@ import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
+import androidx.navigation.toRoute
 import com.andrii_a.muze.ui.navigation.Screen
 
 fun NavGraphBuilder.artworksByArtistRoute(
     navController: NavController
 ) {
-    composable(
-        route = "${Screen.ArtworksByArtist.route}/{artistId}/{artistName}",
-        arguments = listOf(
-            navArgument("artistId") {
-                type = NavType.IntType
-                nullable = false
-            },
-            navArgument("artistName") {
-                type = NavType.StringType
-                nullable = false
-            }
-        )
-    ) { navBackStackEntry ->
+    composable<Screen.ArtworksByArtist> { navBackStackEntry ->
         val view = LocalView.current
         val shouldUseDarkIcons = !isSystemInDarkTheme()
 
@@ -38,18 +24,15 @@ fun NavGraphBuilder.artworksByArtistRoute(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = shouldUseDarkIcons
         }
 
-        val artistName = navBackStackEntry.arguments?.getString("artistName").orEmpty()
+        val artistName = navBackStackEntry.toRoute<Screen.ArtworksByArtist>().artistName
 
         val viewModel: ArtworksByArtistViewModel = hiltViewModel()
 
         ArtworksByArtistScreen(
             artistName = artistName,
             artworksFlow = viewModel.artworks,
-            onArtworkSelected = navController::navigateToArtworkDetail,
+            onArtworkSelected = { navController.navigate(Screen.ArtworkDetail(it)) },
             navigateBack = navController::navigateUp
         )
     }
 }
-
-fun NavController.navigateToArtworksByArtist(artistId: Int, artistName: String) =
-    this.navigate("${Screen.ArtworksByArtist.route}/$artistId/$artistName")

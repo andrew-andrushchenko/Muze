@@ -8,23 +8,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.andrii_a.muze.ui.navigation.Screen
 
 fun NavGraphBuilder.artworkDetailRoute(
     navController: NavController
 ) {
-    composable(
-        route = "${Screen.ArtworkDetail.route}/{artworkId}",
-        arguments = listOf(
-            navArgument("artworkId") {
-                type = NavType.IntType
-                nullable = false
-            }
-        )
-    ) { navBackStackEntry ->
+    composable<Screen.ArtistDetail> { navBackStackEntry ->
         val viewModel: ArtworkDetailViewModel = hiltViewModel()
         val loadResult = viewModel.loadResult.collectAsStateWithLifecycle()
 
@@ -48,7 +39,7 @@ fun NavGraphBuilder.artworkDetailRoute(
             }
         }
 
-        val artworkId = navBackStackEntry.arguments?.getInt("artworkId") ?: 1
+        val artworkId = navBackStackEntry.toRoute<Screen.ArtworkDetail>().artworkId
 
         ArtworkDetailScreen(
             artworkId = artworkId,
@@ -58,6 +49,3 @@ fun NavGraphBuilder.artworkDetailRoute(
         )
     }
 }
-
-fun NavController.navigateToArtworkDetail(artworkId: Int) =
-    this.navigate("${Screen.ArtworkDetail.route}/$artworkId")

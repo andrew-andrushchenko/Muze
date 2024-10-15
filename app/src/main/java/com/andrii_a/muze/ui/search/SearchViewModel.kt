@@ -1,6 +1,5 @@
 package com.andrii_a.muze.ui.search
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
@@ -20,17 +19,11 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val searchRepository: SearchRepository,
-    savedStateHandle: SavedStateHandle
+    //savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _query: MutableStateFlow<String> = MutableStateFlow("")
     val query: StateFlow<String> = _query.asStateFlow()
-
-    init {
-        savedStateHandle.get<String>("query")?.let { query ->
-            onQueryChanged(query)
-        }
-    }
 
     fun onQueryChanged(query: String) {
         _query.update { query }

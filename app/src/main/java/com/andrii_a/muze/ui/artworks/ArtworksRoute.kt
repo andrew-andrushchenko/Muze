@@ -9,13 +9,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
-import com.andrii_a.muze.ui.navigation.NavigationScreen
+import com.andrii_a.muze.ui.navigation.Screen
 
 fun NavGraphBuilder.artworksRoute(
     navController: NavController
 ) {
-    composable(route = NavigationScreen.Artworks.route) {
+    composable<Screen.Artworks> {
         val view = LocalView.current
         val shouldUseDarkIcons = !isSystemInDarkTheme()
 
@@ -28,7 +27,7 @@ fun NavGraphBuilder.artworksRoute(
 
         ArtworksScreen(
             artworksFlow = viewModel.artworks,
-            onArtworkSelected = navController::navigateToArtworkDetail
+            onArtworkSelected = { navController.navigate(Screen.ArtworkDetail(it)) }
         )
     }
 }

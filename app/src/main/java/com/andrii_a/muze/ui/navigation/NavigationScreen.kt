@@ -12,31 +12,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.andrii_a.muze.R
 
 enum class NavigationScreen(
-    val route: String,
+    val screen: Screen,
     @StringRes val titleRes: Int,
     val iconUnselected: ImageVector,
     val iconSelected: ImageVector
 ) {
     Artists(
-        route = "nav_artists",
+        screen = Screen.Artists,
         titleRes = R.string.artists,
         iconSelected = Icons.Filled.Groups,
         iconUnselected = Icons.Outlined.Groups
     ),
     Artworks(
-        route = "nav_artworks",
+        screen = Screen.Artworks,
         titleRes = R.string.artworks,
         iconSelected = Icons.Filled.Image,
         iconUnselected = Icons.Outlined.Image
     ),
     Search(
-        route = "nav_search",
+        screen = Screen.Search,
         titleRes = R.string.search,
         iconSelected = Icons.Filled.Search,
         iconUnselected = Icons.Outlined.Search
     )
-}
-
-val NavigationScreenRoutes: List<String> by lazy {
-    NavigationScreen.entries.map { it.route }
 }

@@ -9,14 +9,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.andrii_a.muze.ui.artist_detail.navigateToArtistDetail
-import com.andrii_a.muze.ui.artwork_detail.navigateToArtworkDetail
-import com.andrii_a.muze.ui.navigation.NavigationScreen
+import com.andrii_a.muze.ui.navigation.Screen
 
 fun NavGraphBuilder.searchRoute(
     navController: NavController
 ) {
-    composable(route = NavigationScreen.Search.route) {
+    composable<Screen.Search> {
         val view = LocalView.current
         val shouldUseDarkIcons = !isSystemInDarkTheme()
 
@@ -32,8 +30,8 @@ fun NavGraphBuilder.searchRoute(
             artists = viewModel.artists,
             artworks = viewModel.artworks,
             onQueryChanged = viewModel::onQueryChanged,
-            navigateToArtistDetail = navController::navigateToArtistDetail,
-            navigateToArtworkDetail = navController::navigateToArtworkDetail
+            navigateToArtistDetail = { navController.navigate(Screen.ArtistDetail(it)) },
+            navigateToArtworkDetail = { navController.navigate(Screen.ArtworkDetail(it)) }
         )
     }
 }
