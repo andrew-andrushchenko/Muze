@@ -1,5 +1,6 @@
 package com.andrii_a.muze.ui.artwork_detail
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -25,6 +26,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -45,6 +47,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import coil.compose.AsyncImagePainter
@@ -60,36 +63,39 @@ import com.andrii_a.muze.ui.artwork_detail.components.OverZoomConfig
 import com.andrii_a.muze.ui.artwork_detail.components.Zoomable
 import com.andrii_a.muze.ui.artwork_detail.components.rememberZoomableState
 import com.andrii_a.muze.ui.common.ErrorBanner
+import com.andrii_a.muze.ui.common.UiErrorWithRetry
+import com.andrii_a.muze.ui.theme.MuzeTheme
 import kotlinx.coroutines.launch
 import kotlin.math.max
 
 @Composable
 fun ArtworkDetailScreen(
-    artworkId: Int,
-    loadResult: ArtworkLoadResult,
-    onRetryLoadingArtwork: (Int) -> Unit,
-    navigateBack: () -> Unit
+    state: ArtworkDetailUiState,
+    onEvent: (ArtworkDetailEvent) -> Unit
 ) {
-    when (loadResult) {
-        is ArtworkLoadResult.Empty -> Unit
+    when {
+        state.isLoading -> {
+            LoadingStateContent(
+                onNavigateBack = { onEvent(ArtworkDetailEvent.GoBack) }
+            )
+        }
 
-        is ArtworkLoadResult.Error -> {
-            ErrorSection(
+        !state.isLoading && state.error == null && state.artwork != null -> {
+            SuccessStateContent(
+                state = state,
+                onEvent = onEvent
+            )
+        }
+
+        else -> {
+            val error = state.error as? UiErrorWithRetry
+            Toast.makeText(LocalContext.current, error?.reason?.asString(), Toast.LENGTH_SHORT).show()
+
+            ErrorStateContent(
                 onRetry = {
-                    onRetryLoadingArtwork(artworkId)
+                    error?.onRetry?.invoke()
                 },
-                navigateBack = navigateBack
-            )
-        }
-
-        is ArtworkLoadResult.Loading -> {
-            LoadingSection(navigateBack = navigateBack)
-        }
-
-        is ArtworkLoadResult.Success -> {
-            MainSection(
-                artwork = loadResult.artwork,
-                navigateBack = navigateBack
+                onNavigateBack = { onEvent(ArtworkDetailEvent.GoBack) }
             )
         }
     }
@@ -97,43 +103,13 @@ fun ArtworkDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorSection(
-    onRetry: () -> Unit,
-    navigateBack: () -> Unit
-) {
+private fun LoadingStateContent(onNavigateBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.navigate_back),
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        ErrorBanner(
-            onRetry = onRetry,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoadingSection(navigateBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.navigate_back),
@@ -155,15 +131,45 @@ fun LoadingSection(navigateBack: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSection(
-    artwork: Artwork,
-    navigateBack: () -> Unit
+private fun ErrorStateContent(
+    onRetry: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.navigate_back),
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        ErrorBanner(
+            onRetry = onRetry,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SuccessStateContent(
+    state: ArtworkDetailUiState,
+    onEvent: (ArtworkDetailEvent) -> Unit
+) {
+    val artwork = state.artwork!!
+
     val scope = rememberCoroutineScope()
 
     val bottomSheetState = rememberModalBottomSheetState()
-
-    var openBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     BoxWithConstraints(modifier = Modifier.background(color = Color.Black)) {
         val constraints = this
@@ -171,24 +177,24 @@ fun MainSection(
         var areControlsVisible by rememberSaveable { mutableStateOf(true) }
         var zoomToFillCoefficient by rememberSaveable { mutableFloatStateOf(1f) }
 
-        val state = rememberZoomableState(
+        val zoomableState = rememberZoomableState(
             minScale = 0.5f,
             maxScale = 6f,
             overZoomConfig = OverZoomConfig(1f, 4f)
         )
 
         Zoomable(
-            state = state,
+            state = zoomableState,
             enabled = true,
             onTap = { areControlsVisible = !areControlsVisible },
             dismissGestureEnabled = true,
             onDismiss = {
-                navigateBack()
+                onEvent(ArtworkDetailEvent.GoBack)
                 true
             },
             modifier = Modifier.graphicsLayer {
                 clip = true
-                alpha = 1 - state.dismissDragProgress
+                alpha = 1 - zoomableState.dismissDragProgress
             },
         ) {
             val painter = rememberAsyncImagePainter(
@@ -226,12 +232,12 @@ fun MainSection(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .graphicsLayer {
-                    alpha = 1 - state.dismissDragProgress
+                    alpha = 1 - zoomableState.dismissDragProgress
                 }
         ) {
             TopSection(
                 artworkName = artwork.name,
-                onNavigateBack = navigateBack
+                onNavigateBack = { onEvent(ArtworkDetailEvent.GoBack) }
             )
         }
 
@@ -242,17 +248,17 @@ fun MainSection(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .graphicsLayer {
-                    alpha = 1 - state.dismissDragProgress
+                    alpha = 1 - zoomableState.dismissDragProgress
                 }
         ) {
             BottomSection(
                 artist = artwork.artist,
-                zoomIcon = if (state.scale == 1f) Icons.Outlined.ZoomOutMap else Icons.Outlined.ZoomInMap,
-                onInfoButtonClick = { openBottomSheet = !openBottomSheet },
+                zoomIcon = if (zoomableState.scale == 1f) Icons.Outlined.ZoomOutMap else Icons.Outlined.ZoomInMap,
+                onInfoButtonClick = { onEvent(ArtworkDetailEvent.ShowInfoDialog) },
                 onZoomToFillClick = {
                     scope.launch {
-                        state.animateScaleTo(
-                            if (state.scale >= zoomToFillCoefficient) 1f
+                        zoomableState.animateScaleTo(
+                            if (zoomableState.scale >= zoomToFillCoefficient) 1f
                             else zoomToFillCoefficient
                         )
                     }
@@ -266,9 +272,9 @@ fun MainSection(
         }
     }
 
-    if (openBottomSheet) {
+    if (state.isInfoDialogOpened) {
         ModalBottomSheet(
-            onDismissRequest = { openBottomSheet = false },
+            onDismissRequest = { onEvent(ArtworkDetailEvent.DismissInfoDialog) },
             sheetState = bottomSheetState
         ) {
             BottomSheetContent(artwork = artwork)
@@ -382,4 +388,51 @@ private fun getZoomToFillScaleCoefficient(
     val zoomScaleW = containerWidth / width
 
     return max(zoomScaleW, zoomScaleH)
+}
+
+@Preview
+@Composable
+private fun ArtworkDetailScreenPreview() {
+    MuzeTheme {
+        Surface {
+            val artist = Artist(
+                id = 0,
+                name = "Rene Magritte",
+                bornDateString = "1890-01-12",
+                diedDateString = "1956-04-10",
+                portraitImage = com.andrii_a.muze.domain.models.Image(
+                    width = 200,
+                    height = 200,
+                    url = ""
+                ),
+                bio = "lorem ipsum".repeat(5)
+            )
+
+            val artwork = Artwork(
+                id = 0,
+                name = "artwork",
+                year = "1990",
+                location = "London",
+                image = com.andrii_a.muze.domain.models.Image(
+                    width = 200,
+                    height = 200,
+                    url = ""
+                ),
+                description = "",
+                artist = artist
+            )
+
+            val state = ArtworkDetailUiState(
+                artwork = artwork,
+                isLoading = false,
+                error = null,
+                isInfoDialogOpened = false
+            )
+
+            ArtworkDetailScreen(
+                state = state,
+                onEvent = {}
+            )
+        }
+    }
 }

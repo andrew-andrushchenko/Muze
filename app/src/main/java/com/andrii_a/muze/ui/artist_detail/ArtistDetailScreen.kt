@@ -2,6 +2,7 @@ package com.andrii_a.muze.ui.artist_detail
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,10 +24,12 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -43,6 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -52,43 +56,41 @@ import coil.size.Scale
 import com.andrii_a.muze.R
 import com.andrii_a.muze.domain.models.Artist
 import com.andrii_a.muze.domain.models.Artwork
+import com.andrii_a.muze.domain.models.Image
 import com.andrii_a.muze.ui.common.ErrorBanner
+import com.andrii_a.muze.ui.common.UiErrorWithRetry
 import com.andrii_a.muze.ui.theme.BottleCapShape
+import com.andrii_a.muze.ui.theme.MuzeTheme
 import com.andrii_a.muze.ui.util.lifeYearsString
-import kotlinx.coroutines.flow.Flow
 
 @Composable
 fun ArtistDetailScreen(
-    artistId: Int,
-    loadResult: ArtistLoadResult,
-    artworksFlow: Flow<PagingData<Artwork>>,
-    navigateToArtistArtworks: (artistId: Int, artistName: String) -> Unit,
-    navigateToArtworkDetail: (artworkId: Int) -> Unit,
-    onRetryLoadingArtist: (Int) -> Unit,
-    navigateBack: () -> Unit
+    state: ArtistDetailUiState,
+    onEvent: (ArtistDetailEvent) -> Unit
 ) {
-    when (loadResult) {
-        is ArtistLoadResult.Empty -> Unit
-        is ArtistLoadResult.Error -> {
-            ErrorSection(
+    when {
+        state.isLoading -> {
+            LoadingStateContent(
+                onNavigateBack = { onEvent(ArtistDetailEvent.GoBack) }
+            )
+        }
+
+        !state.isLoading && state.error == null && state.artist != null -> {
+            SuccessStateContent(
+                state = state,
+                onEvent = onEvent
+            )
+        }
+
+        else -> {
+            val error = state.error as? UiErrorWithRetry
+            Toast.makeText(LocalContext.current, error?.reason?.asString(), Toast.LENGTH_SHORT).show()
+
+            ErrorStateContent(
                 onRetry = {
-                    onRetryLoadingArtist(artistId)
+                    error?.onRetry?.invoke()
                 },
-                navigateBack = navigateBack
-            )
-        }
-
-        is ArtistLoadResult.Loading -> {
-            LoadingSection(navigateBack = navigateBack)
-        }
-
-        is ArtistLoadResult.Success -> {
-            MainSection(
-                artist = loadResult.artist,
-                artworksFlow = artworksFlow,
-                navigateToArtistArtworks = navigateToArtistArtworks,
-                navigateToArtworkDetail = navigateToArtworkDetail,
-                navigateBack = navigateBack
+                onNavigateBack = { onEvent(ArtistDetailEvent.GoBack) }
             )
         }
     }
@@ -96,43 +98,13 @@ fun ArtistDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ErrorSection(
-    onRetry: () -> Unit,
-    navigateBack: () -> Unit
-) {
+private fun LoadingStateContent(onNavigateBack: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = stringResource(id = R.string.navigate_back),
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        ErrorBanner(
-            onRetry = onRetry,
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoadingSection(navigateBack: () -> Unit) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {},
-                navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.navigate_back),
@@ -154,13 +126,42 @@ fun LoadingSection(navigateBack: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSection(
-    artist: Artist,
-    artworksFlow: Flow<PagingData<Artwork>>,
-    navigateToArtistArtworks: (artistId: Int, artistName: String) -> Unit,
-    navigateToArtworkDetail: (artworkId: Int) -> Unit,
-    navigateBack: () -> Unit
+private fun ErrorStateContent(
+    onRetry: () -> Unit,
+    onNavigateBack: () -> Unit
 ) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = stringResource(id = R.string.navigate_back),
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        ErrorBanner(
+            onRetry = onRetry,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SuccessStateContent(
+    state: ArtistDetailUiState,
+    onEvent: (ArtistDetailEvent) -> Unit
+) {
+    val artist = state.artist!!
+
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -168,7 +169,7 @@ fun MainSection(
             TopAppBar(
                 title = { Text(text = artist.name) },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = { onEvent(ArtistDetailEvent.GoBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.navigate_back)
@@ -259,7 +260,7 @@ fun MainSection(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            val artworks = artworksFlow.collectAsLazyPagingItems()
+            val artworks = state.artistArtworks.collectAsLazyPagingItems()
             val artworksSnapshotList = artworks.itemSnapshotList.take(8)
 
             LazyRow(
@@ -272,7 +273,7 @@ fun MainSection(
                     artwork?.let {
                         SmallArtworkItem(
                             imageUrl = artwork.image.url,
-                            onClick = { navigateToArtworkDetail(artwork.id) },
+                            onClick = { onEvent(ArtistDetailEvent.SelectArtwork(artwork.id)) },
                             modifier = Modifier.padding(
                                 end = 16.dp,
                                 top = 16.dp,
@@ -285,8 +286,10 @@ fun MainSection(
                 item {
                     FloatingActionButton(
                         onClick = {
-                            navigateToArtistArtworks(artist.id, artist.name)
+                            onEvent(ArtistDetailEvent.SelectMoreArtworks(artist.id))
+                            //navigateToArtistArtworks(artist.id, artist.name)
                         },
+                        elevation = FloatingActionButtonDefaults.elevation(0.dp),
                         content = {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Default.ArrowForward,
@@ -296,6 +299,53 @@ fun MainSection(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun ArtistDetailScreenPreview() {
+    MuzeTheme {
+        Surface {
+            val artist = Artist(
+                id = 0,
+                name = "Rene Magritte",
+                bornDateString = "1890-01-12",
+                diedDateString = "1956-04-10",
+                portraitImage = Image(
+                    width = 200,
+                    height = 200,
+                    url = ""
+                ),
+                bio = "lorem ipsum".repeat(5)
+            )
+
+            val artwork = Artwork(
+                id = 0,
+                name = "artwork",
+                year = "1990",
+                location = "London",
+                image = Image(
+                    width = 200,
+                    height = 200,
+                    url = ""
+                ),
+                description = "",
+                artist = artist
+            )
+
+            val state = ArtistDetailUiState(
+                artist = artist,
+                isLoading = false,
+                error = null,
+                artistArtworksPagingData = PagingData.from(listOf(artwork, artwork))
+            )
+
+            ArtistDetailScreen(
+                state = state,
+                onEvent = {}
+            )
         }
     }
 }

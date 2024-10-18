@@ -9,24 +9,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
-import com.andrii_a.muze.domain.models.Artist
-import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistsScreen(
-    artistsFlow: Flow<PagingData<Artist>>,
-    navigateToArtistDetail: (artistId: Int) -> Unit
+    state: ArtistsUiState,
+    onEvent: (ArtistsEvent) -> Unit
 ) {
-    val artistsItems = artistsFlow.collectAsLazyPagingItems()
-    val pagerState = rememberPagerState(initialPage = 0) { artistsItems.itemCount }
+    val lazyArtistItems by rememberUpdatedState(newValue = state.artists.collectAsLazyPagingItems())
+    val pagerState = rememberPagerState(initialPage = 0) { lazyArtistItems.itemCount }
 
     Scaffold(
         topBar = {
@@ -48,9 +47,9 @@ fun ArtistsScreen(
                 .padding(bottom = 80.dp)
         ) {
             ArtistsPager(
-                artistItems = artistsItems,
+                artistItems = lazyArtistItems,
                 pagerState = pagerState,
-                navigateToArtistDetail = navigateToArtistDetail
+                navigateToArtistDetail = { onEvent(ArtistsEvent.SelectArtist(it)) }
             )
         }
     }

@@ -3,17 +3,18 @@ package com.andrii_a.muze.ui.artists
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.andrii_a.muze.ui.navigation.Screen
+import com.andrii_a.muze.ui.util.collectAsOneTimeEvents
 
-fun NavGraphBuilder.artistsRoute(
-    navController: NavController
-) {
+fun NavGraphBuilder.artistsRoute(navController: NavController) {
     composable<Screen.Artists> {
         val view = LocalView.current
         val shouldUseDarkIcons = !isSystemInDarkTheme()
@@ -25,9 +26,19 @@ fun NavGraphBuilder.artistsRoute(
 
         val viewModel: ArtistsViewModel = hiltViewModel()
 
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        viewModel.navigationEventsFlow.collectAsOneTimeEvents { event ->
+            when (event) {
+                is ArtistsNavigationEvent.NavigateToArtistDetail -> {
+                    navController.navigate(Screen.ArtistDetail(event.artistId))
+                }
+            }
+        }
+
         ArtistsScreen(
-            artistsFlow = viewModel.artists,
-            navigateToArtistDetail = { navController.navigate(Screen.ArtistDetail(it)) }
+            state = state,
+            onEvent = viewModel::onEvent
         )
     }
 }

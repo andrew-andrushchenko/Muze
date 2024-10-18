@@ -14,34 +14,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
 import com.andrii_a.muze.core.ArtworksLayoutType
-import com.andrii_a.muze.domain.models.Artwork
 import com.andrii_a.muze.ui.common.ArtworksGridContent
 import com.andrii_a.muze.ui.common.ArtworksListContent
-import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworksByArtistScreen(
-    artistName: String,
-    artworksFlow: Flow<PagingData<Artwork>>,
-    onArtworkSelected: (Int) -> Unit,
-    navigateBack: () -> Unit
+    state: ArtworksByArtistUiState,
+    onEvent: (ArtworksByArtistEvent) -> Unit
 ) {
-    var layoutType by rememberSaveable {
-        mutableStateOf(ArtworksLayoutType.DEFAULT)
-    }
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -51,14 +40,14 @@ fun ArtworksByArtistScreen(
                     Text(
                         text = stringResource(
                             id = R.string.artworks_by_formatted,
-                            artistName
+                            "placeholder"
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = navigateBack) {
+                    IconButton(onClick = { onEvent(ArtworksByArtistEvent.GoBack) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = stringResource(id = R.string.navigate_back)
@@ -68,13 +57,15 @@ fun ArtworksByArtistScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            layoutType = when (layoutType) {
+                            val newLayoutType = when (state.artworksLayoutType) {
                                 ArtworksLayoutType.DEFAULT -> ArtworksLayoutType.STAGGERED_GRID
                                 ArtworksLayoutType.STAGGERED_GRID -> ArtworksLayoutType.DEFAULT
                             }
+
+                            onEvent(ArtworksByArtistEvent.ChangeLayoutType(newLayoutType))
                         }
                     ) {
-                        val icon = when (layoutType) {
+                        val icon = when (state.artworksLayoutType) {
                             ArtworksLayoutType.DEFAULT -> Icons.Outlined.ViewCompact
                             ArtworksLayoutType.STAGGERED_GRID -> Icons.AutoMirrored.Outlined.ViewList
                         }
@@ -90,22 +81,22 @@ fun ArtworksByArtistScreen(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
-        val artworks = artworksFlow.collectAsLazyPagingItems()
+        val lazyArtworkItems by rememberUpdatedState(newValue = state.artworks.collectAsLazyPagingItems())
 
-        AnimatedContent(targetState = layoutType, label = "") { layout ->
+        AnimatedContent(targetState = state.artworksLayoutType, label = "") { layout ->
             when (layout) {
                 ArtworksLayoutType.DEFAULT -> {
                     ArtworksListContent(
-                        artworkItems = artworks,
-                        onArtworkSelected = onArtworkSelected,
+                        artworkItems = lazyArtworkItems,
+                        onArtworkSelected = { onEvent(ArtworksByArtistEvent.SelectArtwork(it)) },
                         contentPadding = innerPadding
                     )
                 }
 
                 ArtworksLayoutType.STAGGERED_GRID -> {
                     ArtworksGridContent(
-                        artworkItems = artworks,
-                        onArtworkSelected = onArtworkSelected,
+                        artworkItems = lazyArtworkItems,
+                        onArtworkSelected = { onEvent(ArtworksByArtistEvent.SelectArtwork(it)) },
                         contentPadding = innerPadding
                     )
                 }

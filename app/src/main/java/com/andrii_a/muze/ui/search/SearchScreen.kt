@@ -24,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -33,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -42,27 +44,20 @@ import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
-import com.andrii_a.muze.domain.models.Artist
-import com.andrii_a.muze.domain.models.Artwork
 import com.andrii_a.muze.ui.artworks.ArtworksColumn
 import com.andrii_a.muze.ui.common.ScrollToTopLayout
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
+import com.andrii_a.muze.ui.theme.MuzeTheme
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    query: StateFlow<String>,
-    artists: Flow<PagingData<Artist>>,
-    artworks: Flow<PagingData<Artwork>>,
-    onQueryChanged: (String) -> Unit,
-    navigateToArtistDetail: (artistId: Int) -> Unit,
-    navigateToArtworkDetail: (artworkId: Int) -> Unit
+    state: SearchUiState,
+    onEvent: (SearchEvent) -> Unit
 ) {
     val pageState = rememberPagerState(initialPage = 0) { SearchScreenTabs.entries.size }
 
@@ -71,7 +66,7 @@ fun SearchScreen(
             .fillMaxSize()
             .semantics { isTraversalGroup = true }
     ) {
-        var text by remember { mutableStateOf(query.value) }
+        var text by remember { mutableStateOf(state.query) }
         var active by rememberSaveable { mutableStateOf(false) }
 
         Column {
@@ -82,7 +77,7 @@ fun SearchScreen(
                         onQueryChange = { text = it },
                         onSearch = {
                             active = false
-                            onQueryChanged(text)
+                            onEvent(SearchEvent.PerformSearch(query = text))
                         },
                         expanded = active,
                         onExpandedChange = { active = it },
@@ -103,10 +98,8 @@ fun SearchScreen(
 
             SearchPages(
                 pagerState = pageState,
-                artists = artists,
-                artworks = artworks,
-                navigateToArtistDetail = navigateToArtistDetail,
-                navigateToArtworkDetail = navigateToArtworkDetail,
+                uiState = state,
+                onEvent = onEvent
             )
         }
     }
@@ -154,14 +147,12 @@ private fun SearchTabs(pagerState: PagerState) {
 @Composable
 private fun SearchPages(
     pagerState: PagerState,
-    artists: Flow<PagingData<Artist>>,
-    artworks: Flow<PagingData<Artwork>>,
-    navigateToArtistDetail: (Int) -> Unit,
-    navigateToArtworkDetail: (Int) -> Unit,
+    uiState: SearchUiState,
+    onEvent: (SearchEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val artistsItems = artists.collectAsLazyPagingItems()
-    val artworkItems = artworks.collectAsLazyPagingItems()
+    val lazyArtistItems by rememberUpdatedState(newValue = uiState.artists.collectAsLazyPagingItems())
+    val lazyArtworkItems by rememberUpdatedState(newValue = uiState.artworks.collectAsLazyPagingItems())
 
     HorizontalPager(
         state = pagerState,
@@ -179,8 +170,8 @@ private fun SearchPages(
                     )
                 ) {
                     ArtistsList(
-                        artistItems = artistsItems,
-                        onArtistClick = navigateToArtistDetail,
+                        artistItems = lazyArtistItems,
+                        onArtistClick = { onEvent(SearchEvent.SelectArtist(it)) },
                         contentPadding = PaddingValues(
                             top = 16.dp,
                             bottom = WindowInsets.systemBars.asPaddingValues()
@@ -202,8 +193,8 @@ private fun SearchPages(
                     )
                 ) {
                     ArtworksColumn(
-                        lazyArtworkItems = artworkItems,
-                        onArtworkClick = navigateToArtworkDetail,
+                        lazyArtworkItems = lazyArtworkItems,
+                        onArtworkClick = { onEvent(SearchEvent.SelectArtwork(it)) },
                         listState = listState,
                         contentPadding = PaddingValues(
                             top = 16.dp,
@@ -224,4 +215,19 @@ private fun SearchPages(
 private enum class SearchScreenTabs(@StringRes val titleRes: Int) {
     Artists(R.string.artists),
     Artworks(R.string.artworks),
+}
+
+@Preview
+@Composable
+private fun SearchScreenPreview() {
+    MuzeTheme {
+        Surface {
+            val state = SearchUiState()
+
+            SearchScreen(
+                state = state,
+                onEvent = {}
+            )
+        }
+    }
 }

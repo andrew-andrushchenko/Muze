@@ -13,31 +13,22 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
-import androidx.paging.PagingData
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
 import com.andrii_a.muze.core.ArtworksLayoutType
-import com.andrii_a.muze.domain.models.Artwork
 import com.andrii_a.muze.ui.common.ArtworksGridContent
 import com.andrii_a.muze.ui.common.ArtworksListContent
-import kotlinx.coroutines.flow.Flow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtworksScreen(
-    artworksFlow: Flow<PagingData<Artwork>>,
-    onArtworkSelected: (artworkId: Int) -> Unit
+    state: ArtworksUiState,
+    onEvent: (ArtworksEvent) -> Unit
 ) {
-    var layoutType by rememberSaveable {
-        mutableStateOf(ArtworksLayoutType.DEFAULT)
-    }
-
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
@@ -47,13 +38,15 @@ fun ArtworksScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            layoutType = when (layoutType) {
+                            val newLayoutType = when (state.artworksLayoutType) {
                                 ArtworksLayoutType.DEFAULT -> ArtworksLayoutType.STAGGERED_GRID
                                 ArtworksLayoutType.STAGGERED_GRID -> ArtworksLayoutType.DEFAULT
                             }
+
+                            onEvent(ArtworksEvent.ChangeLayoutType(newLayoutType))
                         }
                     ) {
-                        val icon = when (layoutType) {
+                        val icon = when (state.artworksLayoutType) {
                             ArtworksLayoutType.DEFAULT -> Icons.Outlined.ViewCompact
                             ArtworksLayoutType.STAGGERED_GRID -> Icons.AutoMirrored.Outlined.ViewList
                         }
@@ -69,14 +62,14 @@ fun ArtworksScreen(
         },
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
     ) { innerPadding ->
-        val artworkItems = artworksFlow.collectAsLazyPagingItems()
+        val lazyArtworkItems by rememberUpdatedState(newValue = state.artworks.collectAsLazyPagingItems())
 
-        AnimatedContent(targetState = layoutType, label = "") { layout ->
+        AnimatedContent(targetState = state.artworksLayoutType, label = "") { layout ->
             when (layout) {
                 ArtworksLayoutType.DEFAULT -> {
                     ArtworksListContent(
-                        artworkItems = artworkItems,
-                        onArtworkSelected = onArtworkSelected,
+                        artworkItems = lazyArtworkItems,
+                        onArtworkSelected = { onEvent(ArtworksEvent.SelectArtwork(it)) },
                         addNavigationBarPadding = true,
                         contentPadding = innerPadding
                     )
@@ -84,8 +77,8 @@ fun ArtworksScreen(
 
                 ArtworksLayoutType.STAGGERED_GRID -> {
                     ArtworksGridContent(
-                        artworkItems = artworkItems,
-                        onArtworkSelected = onArtworkSelected,
+                        artworkItems = lazyArtworkItems,
+                        onArtworkSelected = { onEvent(ArtworksEvent.SelectArtwork(it)) },
                         addNavigationBarPadding = true,
                         contentPadding = innerPadding
                     )
