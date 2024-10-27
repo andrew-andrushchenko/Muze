@@ -1,6 +1,6 @@
 package com.andrii_a.muze.ui.artworks
 
-import com.andrii_a.muze.core.ArtworksLayoutType
+import com.andrii_a.muze.ui.util.ArtworksLayoutType
 
 sealed interface ArtworksEvent {
     data object RequestArtworks : ArtworksEvent

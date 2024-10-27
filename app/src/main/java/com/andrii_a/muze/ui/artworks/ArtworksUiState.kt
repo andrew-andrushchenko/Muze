@@ -2,7 +2,7 @@ package com.andrii_a.muze.ui.artworks
 
 import androidx.compose.runtime.Stable
 import androidx.paging.PagingData
-import com.andrii_a.muze.core.ArtworksLayoutType
+import com.andrii_a.muze.ui.util.ArtworksLayoutType
 import com.andrii_a.muze.domain.models.Artwork
 import com.andrii_a.muze.ui.util.emptyPagingData
 import kotlinx.coroutines.flow.MutableStateFlow

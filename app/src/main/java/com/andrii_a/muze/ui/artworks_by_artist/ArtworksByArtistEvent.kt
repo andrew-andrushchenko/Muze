@@ -1,6 +1,6 @@
 package com.andrii_a.muze.ui.artworks_by_artist
 
-import com.andrii_a.muze.core.ArtworksLayoutType
+import com.andrii_a.muze.ui.util.ArtworksLayoutType
 
 sealed interface ArtworksByArtistEvent {
     data class RequestArtworks(val artistId: Int) : ArtworksByArtistEvent

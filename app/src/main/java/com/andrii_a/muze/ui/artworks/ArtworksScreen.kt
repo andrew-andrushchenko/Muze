@@ -19,7 +19,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.andrii_a.muze.R
-import com.andrii_a.muze.core.ArtworksLayoutType
+import com.andrii_a.muze.ui.util.ArtworksLayoutType
 import com.andrii_a.muze.ui.common.ArtworksGridContent
 import com.andrii_a.muze.ui.common.ArtworksListContent
 
