@@ -6,13 +6,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.andrii_a.muze.ui.navigation.Screen
 import com.andrii_a.muze.ui.util.collectAsOneTimeEvents
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.artistsRoute(navController: NavController) {
     composable<Screen.Artists> {
@@ -24,7 +24,7 @@ fun NavGraphBuilder.artistsRoute(navController: NavController) {
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = shouldUseDarkIcons
         }
 
-        val viewModel: ArtistsViewModel = hiltViewModel()
+        val viewModel: ArtistsViewModel = koinViewModel()
 
         val state by viewModel.state.collectAsStateWithLifecycle()
 

@@ -11,7 +11,6 @@ import com.andrii_a.muze.domain.repository.ArtworksRepository
 import com.andrii_a.muze.ui.common.UiErrorWithRetry
 import com.andrii_a.muze.ui.common.UiText
 import com.andrii_a.muze.ui.navigation.Screen
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,10 +19,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ArtistDetailViewModel @Inject constructor(
+class ArtistDetailViewModel(
     private val artistsRepository: ArtistsRepository,
     private val artworksRepository: ArtworksRepository,
     savedStateHandle: SavedStateHandle

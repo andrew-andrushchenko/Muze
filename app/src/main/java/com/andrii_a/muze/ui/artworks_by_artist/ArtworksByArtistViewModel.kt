@@ -7,7 +7,6 @@ import androidx.navigation.toRoute
 import androidx.paging.cachedIn
 import com.andrii_a.muze.domain.repository.ArtworksRepository
 import com.andrii_a.muze.ui.navigation.Screen
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,10 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ArtworksByArtistViewModel @Inject constructor(
+class ArtworksByArtistViewModel(
     private val artworksRepository: ArtworksRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {

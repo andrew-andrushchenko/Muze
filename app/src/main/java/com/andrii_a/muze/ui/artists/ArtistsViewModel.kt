@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.andrii_a.muze.domain.repository.ArtistsRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,16 +11,18 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ArtistsViewModel @Inject constructor(private val artistsRepository: ArtistsRepository) : ViewModel() {
+class ArtistsViewModel(private val artistsRepository: ArtistsRepository) : ViewModel() {
 
     private val _state: MutableStateFlow<ArtistsUiState> = MutableStateFlow(ArtistsUiState())
     val state: StateFlow<ArtistsUiState> = _state.asStateFlow()
 
     private val navigationChannel = Channel<ArtistsNavigationEvent>()
     val navigationEventsFlow = navigationChannel.receiveAsFlow()
+
+    init {
+        onEvent(ArtistsEvent.RequestArtists)
+    }
 
     fun onEvent(event: ArtistsEvent) {
         when (event) {

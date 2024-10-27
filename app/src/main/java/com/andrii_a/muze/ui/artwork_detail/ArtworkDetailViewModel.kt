@@ -9,7 +9,6 @@ import com.andrii_a.muze.domain.repository.ArtworksRepository
 import com.andrii_a.muze.ui.common.UiErrorWithRetry
 import com.andrii_a.muze.ui.common.UiText
 import com.andrii_a.muze.ui.navigation.Screen
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,10 +18,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class ArtworkDetailViewModel @Inject constructor(
+class ArtworkDetailViewModel(
     private val artworksRepository: ArtworksRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -62,7 +59,7 @@ class ArtworkDetailViewModel @Inject constructor(
         }
     }
 
-    fun getArtwork(artworkId: Int) {
+    private fun getArtwork(artworkId: Int) {
         artworksRepository.getArtwork(artworkId).onEach { result ->
             when (result) {
                 is BackendResult.Empty -> Unit
