@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.andrii_a.muze.core.BackendResult
+import com.andrii_a.muze.domain.util.Resource
 import com.andrii_a.muze.domain.repository.ArtworksRepository
 import com.andrii_a.muze.ui.common.UiErrorWithRetry
 import com.andrii_a.muze.ui.common.UiText
@@ -62,14 +62,14 @@ class ArtworkDetailViewModel(
     private fun getArtwork(artworkId: Int) {
         artworksRepository.getArtwork(artworkId).onEach { result ->
             when (result) {
-                is BackendResult.Empty -> Unit
+                is Resource.Empty -> Unit
 
 
-                is BackendResult.Loading -> {
+                is Resource.Loading -> {
                     _state.update { it.copy(isLoading = true) }
                 }
 
-                is BackendResult.Error -> {
+                is Resource.Error -> {
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -85,7 +85,7 @@ class ArtworkDetailViewModel(
                     }
                 }
 
-                is BackendResult.Success -> {
+                is Resource.Success -> {
                     val artwork = result.value
 
                     _state.update {

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import androidx.paging.cachedIn
-import com.andrii_a.muze.core.BackendResult
+import com.andrii_a.muze.domain.util.Resource
 import com.andrii_a.muze.domain.repository.ArtistsRepository
 import com.andrii_a.muze.domain.repository.ArtworksRepository
 import com.andrii_a.muze.ui.common.UiErrorWithRetry
@@ -66,13 +66,13 @@ class ArtistDetailViewModel(
     private fun getArtist(artistId: Int) {
         artistsRepository.getArtist(artistId).onEach { result ->
             when (result) {
-                is BackendResult.Empty -> Unit
+                is Resource.Empty -> Unit
 
-                is BackendResult.Loading -> {
+                is Resource.Loading -> {
                     _state.update { it.copy(isLoading = true) }
                 }
 
-                is BackendResult.Error -> {
+                is Resource.Error -> {
                     _state.update {
                         it.copy(
                             isLoading = false,
@@ -89,7 +89,7 @@ class ArtistDetailViewModel(
                 }
 
 
-                is BackendResult.Success -> {
+                is Resource.Success -> {
                     val artist = result.value
 
                     viewModelScope.launch {
