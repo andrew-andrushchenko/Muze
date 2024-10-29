@@ -3,30 +3,22 @@ package com.andrii_a.muze.data.service
 import com.andrii_a.muze.data.dto.ArtworkDto
 import com.andrii_a.muze.data.util.ARTWORKS_BY_ARTIST_URL
 import com.andrii_a.muze.data.util.ARTWORKS_URL
-import com.andrii_a.muze.data.util.asResource
+import com.andrii_a.muze.data.util.backendRequest
 import com.andrii_a.muze.domain.util.Resource
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.http.appendPathSegments
-import io.ktor.util.network.UnresolvedAddressException
-import kotlinx.serialization.SerializationException
 
 class ArtworksServiceImpl(private val httpClient: HttpClient) : ArtworksService {
 
     override suspend fun getArtworks(page: Int?, perPage: Int?): Resource<List<ArtworkDto>> {
-        val response = try {
+        return backendRequest {
             httpClient.get(urlString = ARTWORKS_URL) {
                 parameter("page", page)
                 parameter("per_page", perPage)
             }
-        } catch (e: UnresolvedAddressException) {
-            return Resource.Error(exception = e)
-        } catch (e: SerializationException) {
-            return Resource.Error(exception = e)
         }
-
-        return response.asResource()
     }
 
     override suspend fun getArtworksByArtist(
@@ -34,7 +26,7 @@ class ArtworksServiceImpl(private val httpClient: HttpClient) : ArtworksService 
         page: Int?,
         perPage: Int?
     ): Resource<List<ArtworkDto>> {
-        val response = try {
+        return backendRequest {
             httpClient.get(urlString = ARTWORKS_BY_ARTIST_URL) {
                 url {
                     appendPathSegments(artistId.toString())
@@ -42,28 +34,16 @@ class ArtworksServiceImpl(private val httpClient: HttpClient) : ArtworksService 
                     parameters.append("per_page", perPage.toString())
                 }
             }
-        } catch (e: UnresolvedAddressException) {
-            return Resource.Error(exception = e)
-        } catch (e: SerializationException) {
-            return Resource.Error(exception = e)
         }
-
-        return response.asResource()
     }
 
     override suspend fun getArtwork(id: Int): Resource<ArtworkDto> {
-        val response = try {
+        return backendRequest {
             httpClient.get(urlString = ARTWORKS_URL) {
                 url {
                     appendPathSegments(id.toString())
                 }
             }
-        } catch (e: UnresolvedAddressException) {
-            return Resource.Error(exception = e)
-        } catch (e: SerializationException) {
-            return Resource.Error(exception = e)
         }
-
-        return response.asResource()
     }
 }

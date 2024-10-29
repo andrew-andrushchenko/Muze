@@ -19,3 +19,11 @@ suspend inline fun <reified T> HttpResponse.asResource(): Resource<T> {
         else -> Resource.Error(code = statusCode, reason = "Unknown error")
     }
 }
+
+suspend inline fun <reified T> backendRequest(crossinline request: suspend () -> HttpResponse): Resource<T> {
+    return try {
+        request().asResource<T>()
+    } catch (e: Exception) {
+        return Resource.Error(exception = e)
+    }
+}
