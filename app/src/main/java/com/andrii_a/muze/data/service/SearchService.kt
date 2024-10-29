@@ -2,23 +2,19 @@ package com.andrii_a.muze.data.service
 
 import com.andrii_a.muze.data.dto.ArtistDto
 import com.andrii_a.muze.data.dto.ArtworkDto
-import retrofit2.http.GET
-import retrofit2.http.Query
+import com.andrii_a.muze.domain.util.Resource
 
 interface SearchService {
 
-    @GET("artists/search")
     suspend fun searchArtists(
-        @Query("query") query: String,
-        @Query("page") page: Int?,
-        @Query("per_page") perPage: Int?
-    ): List<ArtistDto>
+        query: String,
+        page: Int?,
+        perPage: Int?
+    ): Resource<List<ArtistDto>>
 
-    @GET("artworks/search")
     suspend fun searchArtworks(
-        @Query("query") query: String,
-        @Query("page") page: Int?,
-        @Query("per_page") perPage: Int?
-    ): List<ArtworkDto>
-
+        query: String,
+        page: Int?,
+        perPage: Int?
+    ): Resource<List<ArtworkDto>>
 }

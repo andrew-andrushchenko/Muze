@@ -1,7 +1,9 @@
 package com.andrii_a.muze.data.dto
 
 import com.andrii_a.muze.domain.models.Artist
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ArtistDto(
     val id: Int,
     val name: String,

@@ -115,12 +115,12 @@ dependencies {
     implementation(libs.koin.compose.viewmodel)
     implementation(libs.koin.compose.navigation)
 
-    // Retrofit + GSON
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
-    // OkHttp
-    implementation(libs.okhttp)
+    // Ktor client
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization.kotlinx.json)
 
     // Android splash screen
     implementation(libs.androidx.core.splashscreen)
