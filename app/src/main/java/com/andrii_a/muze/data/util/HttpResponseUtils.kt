@@ -3,6 +3,8 @@ package com.andrii_a.muze.data.util
 import com.andrii_a.muze.domain.util.Resource
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import kotlinx.coroutines.ensureActive
+import kotlin.coroutines.coroutineContext
 
 suspend inline fun <reified T> HttpResponse.asResource(): Resource<T> {
     return when (val statusCode = this.status.value) {
@@ -24,6 +26,7 @@ suspend inline fun <reified T> backendRequest(crossinline request: suspend () ->
     return try {
         request().asResource<T>()
     } catch (e: Exception) {
+        coroutineContext.ensureActive()
         return Resource.Error(exception = e)
     }
 }

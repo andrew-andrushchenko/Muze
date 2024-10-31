@@ -6,6 +6,8 @@ import com.andrii_a.muze.data.util.INITIAL_PAGE_INDEX
 import com.andrii_a.muze.data.util.PAGE_SIZE
 import com.andrii_a.muze.domain.models.Artwork
 import com.andrii_a.muze.domain.util.Resource
+import kotlinx.coroutines.ensureActive
+import kotlin.coroutines.coroutineContext
 
 class ArtworksPagingSource(private val artworksService: ArtworksService) : BasePagingSource<Artwork>() {
 
@@ -30,6 +32,7 @@ class ArtworksPagingSource(private val artworksService: ArtworksService) : BaseP
                 nextKey = if (artworks.isEmpty()) null else pageKey + 1
             )
         } catch (exception: Exception) {
+            coroutineContext.ensureActive()
             LoadResult.Error(exception)
         }
     }
